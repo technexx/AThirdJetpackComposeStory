@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">A Third Jetpack Compose Story</string>
+    <string name="intro_speech">
+        You\'re still here. I would have expected otherwise, given the rate of decay.\n\n
+        In another life, I would have liked to do more for you. I think we\'re near the end of things in earnest now, though.\n\n
+        Since I won\'t be seeing you again, I do hope that if there is a next life, it is kinder to you.
+    </string>
+
+    <string name="intro_cards">
+        A mottle of defiance springs from some long-forgotten well.
+    </string>
+
+
+</resources>
