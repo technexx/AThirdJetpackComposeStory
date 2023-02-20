@@ -3,7 +3,6 @@ package a.third.jetpack.compose.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -12,7 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import a.third.jetpack.compose.myapplication.ui.theme.AThirdJetpackComposeStoryTheme
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -35,8 +35,7 @@ class MainActivity : ComponentActivity() {
             AThirdJetpackComposeStoryTheme {
 
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(),
-                    color = Color.White) {
+                Surface(color = MaterialTheme.colors.background) {
                     FullView()
                 }
             }
@@ -46,32 +45,32 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FullView() {
-    ConstraintLayout {
-        val (statsAndBody, playArea) = createRefs()
+    ConstraintLayout (modifier = Modifier
+        .fillMaxSize()
+    ) {
+        val startGuideline = createGuidelineFromTop(0.2f)
+        val statsLayout = createRef()
 
-        val startGuideline = createGuidelineFromTop(0.3f)
-
-        StatsAndBody(modifier = Modifier
-            .constrainAs(statsAndBody) {
-                top.linkTo(startGuideline)
+        Surface(color = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(statsLayout) {
+                    bottom.linkTo(startGuideline)
             }
-        )
 
-    }
-}
+        ) {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                //Todo: Size here affects Surface parent.
+                Image(
+                    painter = painterResource(id = R.drawable.boxman_2),
+                    contentDescription = "Boxman",
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+            }
 
-@Composable
-fun StatsAndBody(modifier: Modifier) {
-    ConstraintLayout {
-        //Constrains our surface as done in FullView()
-        Surface(modifier = modifier) {
-            //Todo: Image visible, but very dark background.
-            Image(
-                painter = painterResource(id = R.drawable.boxman),
-                contentDescription = "Boxman",
-                modifier = Modifier
-                    .size(80.dp)
-            )
         }
     }
 }
@@ -85,6 +84,9 @@ fun PlayArea() {
 @Composable
 fun DefaultPreview() {
     AThirdJetpackComposeStoryTheme {
-
+        Surface(modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background) {
+            FullView()
+        }
     }
 }
