@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.coroutines.NonDisposableHandle.parent
 
 //Todo: Card based? Follow story w/ different rounds. "Who are you" theme (Planescape: Torment)ish? With characters + helpers.
     //Todo: Ancestral traits/cards to start, since current slate is blank.
@@ -49,17 +50,22 @@ fun FullView() {
         .fillMaxSize()
     ) {
         val startGuideline = createGuidelineFromTop(0.2f)
-        val statsLayout = createRef()
+        val (statsLayout, boardLayout) = createRefs()
 
+        //Stats surface.
         Surface(color = MaterialTheme.colors.primary,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(150.dp)
+//                .height(IntrinsicSize.Max)
                 .constrainAs(statsLayout) {
+                    top.linkTo(parent.top)
                     bottom.linkTo(startGuideline)
-            }
+                }
 
         ) {
-            Column (
+            Column (modifier = Modifier
+                .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 //Todo: Size here affects Surface parent.
@@ -70,14 +76,18 @@ fun FullView() {
                         .size(80.dp)
                 )
             }
+        }
+
+        Surface(color = MaterialTheme.colors.secondary,
+            modifier = Modifier
+                .constrainAs(boardLayout) {
+                    top.linkTo(statsLayout.bottom)
+                }
+                .fillMaxSize()
+        ) {
 
         }
     }
-}
-
-@Composable
-fun PlayArea() {
-
 }
 
 @Preview(showBackground = true)
