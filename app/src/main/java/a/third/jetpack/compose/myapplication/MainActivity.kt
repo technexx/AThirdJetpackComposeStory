@@ -8,13 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import a.third.jetpack.compose.myapplication.ui.theme.AThirdJetpackComposeStoryTheme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,8 +35,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AThirdJetpackComposeStoryTheme {
-
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     FullView()
                 }
@@ -50,13 +51,11 @@ fun FullView() {
         val startGuideline = createGuidelineFromTop(0.2f)
         val (statsLayout, boardLayout) = createRefs()
 
-        //Todo: Should Column come before surface?
         //Stats surface.
-        Surface(color = MaterialTheme.colors.primary,
+        Surface(color = colorResource(id = R.color.light_grey),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
-//                .height(IntrinsicSize.Max)
                 .constrainAs(statsLayout) {
                     top.linkTo(parent.top)
                     bottom.linkTo(startGuideline)
@@ -67,12 +66,13 @@ fun FullView() {
                 .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                //Todo: Size here affects Surface parent.
+                //Size here affects Surface parent.
                 Image(
                     painter = painterResource(id = R.drawable.boxman_2),
-                    contentDescription = "Boxman",
+                    contentDescription = "Box Man",
                     modifier = Modifier
-                        .size(80.dp)
+                        .width(80.dp)
+                        .height(80.dp)
                 )
             }
         }
@@ -83,9 +83,8 @@ fun FullView() {
             }
             .fillMaxSize(),
             color = MaterialTheme.colors.onBackground) {
-            //Todo: Button fills entire screen
-            Button(
-                //requiredSize works where size does not
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                //requiredSize works where size does not.
                 modifier = Modifier
                 .requiredSize(120.dp, 40.dp),
                 onClick = {
