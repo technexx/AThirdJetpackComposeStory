@@ -58,43 +58,40 @@ fun FullView() {
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
 
-        //Stats surface.
-        Surface(color = colorResource(id = R.color.light_grey),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .constrainAs(statsLayout) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(startGuideline)
-                }
 
-        ) {
-            Column (modifier = Modifier
-                .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                //Size here affects Surface parent.
-                Image(
-                    painter = painterResource(id = R.drawable.boxman_2),
-                    contentDescription = "Box Man",
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(80.dp)
-                        .alpha(lifeLeft)
-                )
+        Column (modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.light_grey))
+            .constrainAs(statsLayout) {
+                top.linkTo(parent.top)
+                bottom.linkTo(startGuideline)
             }
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            //Size here affects Surface parent.
+            Image(
+                painter = painterResource(id = R.drawable.boxman_2),
+                contentDescription = "Box Man",
+                modifier = Modifier
+
+                    .width(80.dp)
+                    .height(80.dp)
+                    .alpha(lifeLeft)
+            )
         }
 
-        Surface(modifier = Modifier
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.teal_200))
             .constrainAs(boardLayout) {
-                top.linkTo(statsLayout.bottom)
+                top.linkTo(startGuideline)
             }
-            .fillMaxSize(),
-            color = MaterialTheme.colors.onBackground) {
+        ) {
             Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
                 //requiredSize works where size does not.
                 modifier = Modifier
-                .requiredSize(120.dp, 40.dp),
+                    .requiredSize(120.dp, 40.dp),
                 onClick = {
                     lifeLeft += subtractLifeFloat()
                     Log.i("testLife", "life left is $lifeLeft")
