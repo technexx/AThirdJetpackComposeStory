@@ -33,6 +33,8 @@ import kotlin.random.nextInt
 //Todo: Dating profile generator
     //Todo: Input (selection) of traits/likes/dislikes/etc.
 
+//Todo: Use MVVM
+
 //var lifeLeft = 1.0f
 
 class MainActivity : ComponentActivity() {
@@ -40,9 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AThirdJetpackComposeStoryTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    FullView()
-                }
+                FullView()
             }
         }
     }
@@ -52,29 +52,29 @@ class MainActivity : ComponentActivity() {
 fun FullView() {
     ConstraintLayout (modifier = Modifier
         .fillMaxSize()
+        .background(color = colorResource(id = R.color.white))
     ) {
         val startGuideline = createGuidelineFromTop(0.2f)
         val (statsLayout, boardLayout) = createRefs()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
 
-
         Column (modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorResource(id = R.color.light_grey))
             .constrainAs(statsLayout) {
                 top.linkTo(parent.top)
                 bottom.linkTo(startGuideline)
             }
-            ,
+            .fillMaxWidth()
+            .height(120.dp)
+            .background(color = colorResource(id = R.color.lighter_grey)),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             //Size here affects Surface parent.
             Image(
                 painter = painterResource(id = R.drawable.boxman_2),
                 contentDescription = "Box Man",
                 modifier = Modifier
-
                     .width(80.dp)
                     .height(80.dp)
                     .alpha(lifeLeft)
@@ -82,21 +82,44 @@ fun FullView() {
         }
 
         Column(modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorResource(id = R.color.teal_200))
             .constrainAs(boardLayout) {
                 top.linkTo(startGuideline)
+                bottom.linkTo(parent.bottom)
             }
+            .fillMaxWidth()
+            .height(120.dp)
+            .background(color = colorResource(id = R.color.lighter_grey)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
-                //requiredSize works where size does not.
-                modifier = Modifier
-                    .requiredSize(120.dp, 40.dp),
-                onClick = {
-                    lifeLeft += subtractLifeFloat()
-                    Log.i("testLife", "life left is $lifeLeft")
-                }) {
-                Text(text = "Click me!")
+
+            Row (modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+                )
+            {
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                    modifier = Modifier
+                        .size(100.dp, 40.dp),
+                    onClick = {
+                        lifeLeft += addLifeFloat()
+                    }) {
+                    Text(text = "Live!")
+                }
+
+                Spacer(modifier = Modifier.width(40.dp))
+
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                    //requiredSize works where size does not.
+                    modifier = Modifier
+                        .size(100.dp, 40.dp),
+                    onClick = {
+                        lifeLeft += subtractLifeFloat()
+                    }) {
+                    Text(text = "Kill!")
+                }
+
             }
         }
     }
