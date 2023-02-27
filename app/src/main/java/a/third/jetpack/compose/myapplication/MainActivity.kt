@@ -22,7 +22,10 @@ import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.coroutines.NonDisposableHandle.parent
@@ -57,7 +60,7 @@ fun FullView() {
         .fillMaxSize()
         .background(color = colorResource(id = R.color.white))
     ) {
-        val startGuideline = createGuidelineFromTop(0.2f)
+        val startGuideline = createGuidelineFromTop(0.25f)
         val (statsLayout, boardLayout) = createRefs()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
@@ -83,13 +86,8 @@ fun FullView() {
                     .background(colorResource(id = R.color.android_magenta)),
                     verticalArrangement = Arrangement.SpaceBetween){
 
-                    Text("Energy",
-                        modifier = Modifier
-                            .padding()
-                    )
-                    Text("Mood",
-                    modifier = Modifier
-                )
+                    StatText(textString = "Energy")
+                    StatText(textString = "Mood")
                 }
 
                 Column(modifier = Modifier
@@ -103,8 +101,8 @@ fun FullView() {
                         painter = painterResource(id = R.drawable.boxman_2),
                         contentDescription = "Box Man",
                         modifier = Modifier
-                            .width(80.dp)
-                            .height(80.dp)
+                            .width(100.dp)
+                            .height(100.dp)
                             .alpha(lifeLeft)
                     )
                 }
@@ -115,13 +113,8 @@ fun FullView() {
                     .background(colorResource(id = R.color.lighter_green)),
                     verticalArrangement = Arrangement.SpaceBetween) {
 
-                    Text("Physical",
-                        modifier = Modifier
-                            .padding()
-                    )
-                    Text("Mental",
-                        modifier = Modifier
-                    )
+                    StatText("Physical")
+                    StatText("Mental")
                 }
 
 
@@ -171,6 +164,11 @@ fun FullView() {
             }
         }
     }
+}
+
+@Composable
+private fun StatText(textString: String) {
+    Text(text = textString, color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
 }
 
 private fun addLifeFloat() : Float { return randomFloat(0.05f, 0.1f) }
