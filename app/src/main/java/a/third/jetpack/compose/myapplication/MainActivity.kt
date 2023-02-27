@@ -71,7 +71,7 @@ fun FullView() {
                 bottom.linkTo(startGuideline)
             }
             .fillMaxWidth()
-            .height(120.dp)
+            .height(150.dp)
             .background(color = colorResource(id = R.color.lighter_grey)),
         ) {
             Row(modifier = Modifier
@@ -84,10 +84,12 @@ fun FullView() {
                     .fillMaxHeight()
                     .width(120.dp)
                     .background(colorResource(id = R.color.android_magenta)),
-                    verticalArrangement = Arrangement.SpaceBetween){
-
-                    StatText(textString = "Energy")
-                    StatText(textString = "Mood")
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                )
+                {
+                    StatText(textString = "Energy", 0, 0, 0, 0)
+                    StatText(textString = "Mood", 0, 45, 0, 0)
                 }
 
                 Column(modifier = Modifier
@@ -111,14 +113,12 @@ fun FullView() {
                     .fillMaxHeight()
                     .width(120.dp)
                     .background(colorResource(id = R.color.lighter_green)),
-                    verticalArrangement = Arrangement.SpaceBetween) {
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
 
-                    StatText("Physical")
-                    StatText("Mental")
+                    StatText("Physical",0, 0, 0, 0)
+                    StatText("Mental", 0, 45, 0, 0)
                 }
-
-
-
             }
         }
 
@@ -167,8 +167,14 @@ fun FullView() {
 }
 
 @Composable
-private fun StatText(textString: String) {
-    Text(text = textString, color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+private fun StatText(textString: String, topPadding: Int, bottomPadding: Int, startPadding: Int, endPadding: Int) {
+    Text(text = textString, color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .padding(top = topPadding.dp)
+            .padding(bottom = bottomPadding.dp)
+            .padding(start = startPadding.dp)
+            .padding(end = endPadding.dp)
+    )
 }
 
 private fun addLifeFloat() : Float { return randomFloat(0.05f, 0.1f) }
