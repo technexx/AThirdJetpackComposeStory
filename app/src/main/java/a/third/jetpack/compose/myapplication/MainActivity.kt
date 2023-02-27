@@ -85,7 +85,6 @@ fun FullView() {
                     .fillMaxHeight()
                     .width(120.dp)
                     .background(colorResource(id = R.color.android_magenta)),
-//                    verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 )
                 {
@@ -117,11 +116,13 @@ fun FullView() {
                     .fillMaxHeight()
                     .width(120.dp)
                     .background(colorResource(id = R.color.lighter_green)),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     StatTextHeader("Physical",0, 0, 0, 0)
-                    StatTextHeader("Mental", 0, 45, 0, 0)
+                    StatTextBody(100, topPadding = 5)
+
+                    StatTextHeader("Mental", 20, 0, 0, 0)
+                    StatTextBody(100, topPadding = 5)
                 }
             }
         }
