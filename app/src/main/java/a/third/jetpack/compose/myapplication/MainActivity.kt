@@ -10,6 +10,8 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
@@ -189,11 +191,22 @@ private fun StatTextBody(statValue: Int,  topPadding: Int) {
 }
 
 @Composable
-fun GameCards(cards: List<CardValues>) {
+fun VisibleGameCards(cards: List<CardValues>) {
+    LazyRow {
+        items(cards) { cardsShown ->
+            StuffInCards(cardsShown)
+        }
+    }
+}
+
+@Composable
+fun StuffInCards(cardValues: CardValues) {
 
 }
 
 data class CardValues(val energyMod: Int, val moodMod: Int, val physicalMod: Int, val mentalMod: Int)
+
+////////////////////////////////////////////////////////////////////////////////////
 
 private fun addLifeFloat() : Float { return randomFloat(0.05f, 0.1f) }
 
