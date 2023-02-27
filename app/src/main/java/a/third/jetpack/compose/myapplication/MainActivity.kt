@@ -24,6 +24,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -84,12 +85,15 @@ fun FullView() {
                     .fillMaxHeight()
                     .width(120.dp)
                     .background(colorResource(id = R.color.android_magenta)),
-                    verticalArrangement = Arrangement.SpaceBetween,
+//                    verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 )
                 {
-                    StatText(textString = "Energy", 0, 0, 0, 0)
-                    StatText(textString = "Mood", 0, 45, 0, 0)
+                    StatTextHeader(textString = "Energy", 0, 0, 0, 0)
+                    StatTextBody(100, topPadding = 5)
+
+                    StatTextHeader(textString = "Mood", 20, 0, 0, 0)
+                    StatTextBody(100, topPadding = 5)
                 }
 
                 Column(modifier = Modifier
@@ -116,8 +120,8 @@ fun FullView() {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally) {
 
-                    StatText("Physical",0, 0, 0, 0)
-                    StatText("Mental", 0, 45, 0, 0)
+                    StatTextHeader("Physical",0, 0, 0, 0)
+                    StatTextHeader("Mental", 0, 45, 0, 0)
                 }
             }
         }
@@ -167,13 +171,21 @@ fun FullView() {
 }
 
 @Composable
-private fun StatText(textString: String, topPadding: Int, bottomPadding: Int, startPadding: Int, endPadding: Int) {
-    Text(text = textString, color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold,
+private fun StatTextHeader(textString: String, topPadding: Int, bottomPadding: Int, startPadding: Int, endPadding: Int) {
+    Text(text = textString, color = Color.Black, fontSize = 18.sp,
         modifier = Modifier
             .padding(top = topPadding.dp)
             .padding(bottom = bottomPadding.dp)
             .padding(start = startPadding.dp)
             .padding(end = endPadding.dp)
+    )
+}
+
+@Composable
+private fun StatTextBody(statValue: Int,  topPadding: Int) {
+    Text(text = statValue.toString(), color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .padding(top = topPadding.dp)
     )
 }
 
