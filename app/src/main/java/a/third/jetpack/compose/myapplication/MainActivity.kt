@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -48,6 +49,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
+//*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
 @Composable
 fun FullView() {
     ConstraintLayout (modifier = Modifier
@@ -67,18 +70,63 @@ fun FullView() {
             .fillMaxWidth()
             .height(120.dp)
             .background(color = colorResource(id = R.color.lighter_grey)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-            //Size here affects Surface parent.
-            Image(
-                painter = painterResource(id = R.drawable.boxman_2),
-                contentDescription = "Box Man",
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(80.dp)
-                    .alpha(lifeLeft)
-            )
+            Row(modifier = Modifier
+                .fillMaxSize(),
+//                .background(colorResource(id = R.color.light_teal)),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column (modifier = Modifier
+                    .fillMaxHeight()
+                    .width(120.dp)
+                    .background(colorResource(id = R.color.android_magenta)),
+                    verticalArrangement = Arrangement.SpaceBetween){
+
+                    Text("Energy",
+                        modifier = Modifier
+                            .padding()
+                    )
+                    Text("Mood",
+                    modifier = Modifier
+                )
+                }
+
+                Column(modifier = Modifier
+                    .fillMaxHeight()
+                    .width(120.dp)
+                    .background(colorResource(id = R.color.very_light_grey)),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.boxman_2),
+                        contentDescription = "Box Man",
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(80.dp)
+                            .alpha(lifeLeft)
+                    )
+                }
+
+                Column(modifier = Modifier
+                    .fillMaxHeight()
+                    .width(120.dp)
+                    .background(colorResource(id = R.color.lighter_green)),
+                    verticalArrangement = Arrangement.SpaceBetween) {
+
+                    Text("Physical",
+                        modifier = Modifier
+                            .padding()
+                    )
+                    Text("Mental",
+                        modifier = Modifier
+                    )
+                }
+
+
+
+            }
         }
 
         Column(modifier = Modifier
