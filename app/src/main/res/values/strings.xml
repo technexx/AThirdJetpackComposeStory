@@ -11,4 +11,36 @@
     </string>
 
 
+    <string-array name="task_cards_array_light">
+        <item>Walk the Dog</item>
+        <item>Cook Breakfast</item>
+        <item>Cook Dinner</item>
+        <item>Get Dressed</item>
+        <item>Do Laundry</item>
+        <item></item>
+    </string-array>
+
+    <string-array name="task_cards_array_moderate">
+        <item>Short Work Shift</item>
+        <item>Call Parent</item>
+
+    </string-array>
+
+    <string-array name="task_cards_array_severe">
+        <item>Long Work Shift</item>
+    </string-array>
+
+    <string-array name="tasks_cards_mixed">
+
+    </string-array>
+
+
+    <string-array name="consumable_cards_good">
+
+    </string-array>
+
+    <string-array name="consumable_cards_mixed">
+
+    </string-array>
+
 </resources>

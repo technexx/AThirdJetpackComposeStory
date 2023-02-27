@@ -40,8 +40,6 @@ import kotlin.random.nextInt
 
 //Todo: Use MVVM
 
-//var lifeLeft = 1.0f
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +127,7 @@ fun FullView() {
 
         Column(modifier = Modifier
             .constrainAs(boardLayout) {
-                top.linkTo(startGuideline)
+                top.linkTo(statsLayout.bottom)
                 bottom.linkTo(parent.bottom)
             }
             .fillMaxWidth()
@@ -189,6 +187,13 @@ private fun StatTextBody(statValue: Int,  topPadding: Int) {
             .padding(top = topPadding.dp)
     )
 }
+
+@Composable
+fun GameCards(cards: List<CardValues>) {
+
+}
+
+data class CardValues(val energyMod: Int, val moodMod: Int, val physicalMod: Int, val mentalMod: Int)
 
 private fun addLifeFloat() : Float { return randomFloat(0.05f, 0.1f) }
 
