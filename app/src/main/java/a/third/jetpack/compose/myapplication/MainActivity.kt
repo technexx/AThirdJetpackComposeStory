@@ -33,7 +33,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.coroutines.NonDisposableHandle.parent
 import kotlin.random.Random
-import kotlin.random.nextInt
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 
 //Todo: Card based? Follow story w/ different rounds. "Who are you" theme (Planescape: Torment)ish? With characters + helpers.
     //Todo: Ancestral traits/cards to start, since current slate is blank.
@@ -42,14 +43,28 @@ import kotlin.random.nextInt
 
 //Todo: Use MVVM
 
+val statsValues = StatsValues()
+private lateinit var statsViewModel : StatsViewModel
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val statsViewModelInit : StatsViewModel by viewModels()
+            statsViewModel = statsViewModelInit
+
+            setStatsValues()
+
             AThirdJetpackComposeStoryTheme {
                 FullView()
             }
         }
+    }
+
+    private fun setStatsViewModelObservers() {
+        statsViewModel.moodValue.observe(this, {
+
+        })
     }
 }
 
@@ -89,10 +104,10 @@ fun FullView() {
                 )
                 {
                     StatTextHeader(textString = "Energy", 0, 0, 0, 0)
-                    StatTextBody(100, topPadding = 5)
+                    StatTextBody(100, topPadding = 0)
 
                     StatTextHeader(textString = "Mood", 20, 0, 0, 0)
-                    StatTextBody(100, topPadding = 5)
+                    StatTextBody(100, topPadding = 0)
                 }
 
                 Column(modifier = Modifier
@@ -119,10 +134,10 @@ fun FullView() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     StatTextHeader("Physical",0, 0, 0, 0)
-                    StatTextBody(100, topPadding = 5)
+                    StatTextBody(100, topPadding = 0)
 
                     StatTextHeader("Mental", 20, 0, 0, 0)
-                    StatTextBody(100, topPadding = 5)
+                    StatTextBody(100, topPadding = 0)
                 }
             }
         }
@@ -214,6 +229,13 @@ private fun subtractLifeFloat() : Float { return - (randomFloat(0.05f, 0.1f)) }
 
 private fun randomFloat(min: Float, max: Float) : Float {
     return min + Random.nextFloat() * (max - min)
+}
+
+private fun setStatsValues() {
+    statsValues.energy = 100
+    statsValues.mood = 100
+    statsValues.physical = 100
+    statsValues.mental = 100
 }
 
 @Preview(showBackground = true)
