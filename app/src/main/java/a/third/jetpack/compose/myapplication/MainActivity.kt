@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import a.third.jetpack.compose.myapplication.ui.theme.AThirdJetpackComposeStoryTheme
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -62,10 +63,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setStatsViewModelObservers() {
-        statsViewModel.moodValue.observe(this, {
-
-        })
+        statsViewModel.mutableMoodValue.observe(this) {
+            Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
+        }
     }
+}
+
+private fun setStatsValues() {
+    statsViewModel.setEnergyValue(100)
+    statsViewModel.setMoodValue(100)
+    statsViewModel.setPhysicalValue(100)
+    statsViewModel.setMentalValue(100)
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -165,6 +173,10 @@ fun FullView() {
                         .size(100.dp, 40.dp),
                     onClick = {
                         lifeLeft += addLifeFloat()
+
+                        var valueToChange : Int = statsViewModel.getMoodValue()!!
+                        valueToChange += 5
+                        statsViewModel.setMoodValue(valueToChange)
                     }) {
                     Text(text = "Live!")
                 }
@@ -229,13 +241,6 @@ private fun subtractLifeFloat() : Float { return - (randomFloat(0.05f, 0.1f)) }
 
 private fun randomFloat(min: Float, max: Float) : Float {
     return min + Random.nextFloat() * (max - min)
-}
-
-private fun setStatsValues() {
-    statsValues.energy = 100
-    statsValues.mood = 100
-    statsValues.physical = 100
-    statsValues.mental = 100
 }
 
 @Preview(showBackground = true)
