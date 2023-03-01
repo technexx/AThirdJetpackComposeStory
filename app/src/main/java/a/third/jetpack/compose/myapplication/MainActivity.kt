@@ -44,6 +44,7 @@ import androidx.lifecycle.Observer
 
 //Todo: Use MVVM
 
+private lateinit var statsValues: StatsValues
 private lateinit var statsViewModel : StatsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +58,8 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
         }
 
-        setStatsValuesInViewModel()
+        setInitialStatsValues()
+        assignStatsValuesToViewModel()
 
         setContent {
             AThirdJetpackComposeStoryTheme {
@@ -66,15 +68,37 @@ class MainActivity : ComponentActivity() {
 
         }
     }
-
-
 }
 
-private fun setStatsValuesInViewModel() {
-    statsViewModel.setEnergyValue(100)
-    statsViewModel.setMoodValue(100)
-    statsViewModel.setPhysicalValue(100)
-    statsViewModel.setMentalValue(100)
+private fun setInitialStatsValues() { statsValues = StatsValues(100, 100, 100, 100) }
+
+private fun assignStatsValuesToViewModel() {
+    statsViewModel.setEnergyValue(statsValues.energy)
+    statsViewModel.setMoodValue(statsValues.mood)
+    statsViewModel.setPhysicalValue(statsValues.physical)
+    statsViewModel.setMentalValue(statsValues.mental)
+}
+
+private fun updateStatsValuesFromViewModel() {
+    statsValues.energy = statsViewModel.getEnergyValue()
+    statsValues.mood = statsViewModel.getMoodValue()
+    statsValues.physical = statsViewModel.getPhysicalValue()
+    statsValues.mental = statsViewModel.getMentalValue()
+}
+
+//Todo: These should trigger when our ViewModel observer(s) respond to a user action
+private fun increaseStatValue(stat: String, value: Int) {
+    if (stat == "Energy") statsValues.energy += value
+    if (stat == "Mood") statsValues.mood += value
+    if (stat == "Physical") statsValues.physical += value
+    if (stat == "Mental") statsValues.mental += value
+}
+
+private fun decreaseStatValue(stat: String, value: Int) {
+    if (stat == "Energy") statsValues.energy -= value
+    if (stat == "Mood") statsValues.mood -= value
+    if (stat == "Physical") statsValues.physical -= value
+    if (stat == "Mental") statsValues.mental -= value
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -87,6 +111,12 @@ fun FullView() {
     ) {
         val startGuideline = createGuidelineFromTop(0.25f)
         val (statsLayout, boardLayout) = createRefs()
+
+        //Todo: Set "remember" on each value.
+        var energyValue = statsViewModel.getEnergyValue()
+        var moodValue = statsViewModel.getMoodValue()
+        var physicalValue = statsViewModel.getPhysicalValue()
+        var mentalValue = statsViewModel.getMentalValue()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
 
@@ -116,7 +146,7 @@ fun FullView() {
                     StatTextBody(100, topPadding = 0)
 
                     StatTextHeader(textString = "Mood", 20, 0, 0, 0)
-                    StatTextBody(100, topPadding = 0)
+                    StatTextBody(statsViewModel.getMoodValue(), topPadding = 0)
                 }
 
                 Column(modifier = Modifier
@@ -174,10 +204,6 @@ fun FullView() {
                         .size(100.dp, 40.dp),
                     onClick = {
                         lifeLeft += addLifeFloat()
-
-                        var valueToChange : Int = statsViewModel.getMoodValue()!!
-                        valueToChange += 5
-                        statsViewModel.setMoodValue(valueToChange)
                     }) {
                     Text(text = "Live!")
                 }

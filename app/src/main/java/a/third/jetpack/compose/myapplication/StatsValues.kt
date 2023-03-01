@@ -1,10 +1,6 @@
 package a.third.jetpack.compose.myapplication
 
-class StatsValues {
-    var energy : Int = 0
-    var mood : Int = 0
-    var physical : Int = 0
-    var mental : Int = 0
-
+//In Kotlin, we can declare variables explicitly through constructor.
+class StatsValues (var energy: Int, var mood: Int, var physical: Int, var mental: Int){
 
 }

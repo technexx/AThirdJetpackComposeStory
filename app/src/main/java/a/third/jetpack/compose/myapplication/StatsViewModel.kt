@@ -20,9 +20,9 @@ class StatsViewModel : ViewModel() {
     fun setPhysicalValue(valueToAssign: Int) { mutablePhysicalValue.value = valueToAssign }
     fun setMentalValue(valueToAssign: Int) { mutableMentalValue.value = valueToAssign }
 
-    fun getEnergyValue() : Int? { return energyValue.value}
-    fun getMoodValue() : Int? { return moodValue.value}
-    fun getPhysicalValue() : Int? { return physicalValue.value}
-    fun getMentalValue() : Int? { return mentalValue.value}
+    fun getEnergyValue() : Int { return energyValue.value!!}
+    fun getMoodValue() : Int { return moodValue.value!! }
+    fun getPhysicalValue() : Int { return physicalValue.value!!}
+    fun getMentalValue() : Int { return mentalValue.value!!}
 
 }
