@@ -44,48 +44,43 @@ import androidx.lifecycle.Observer
 
 //Todo: Use MVVM
 
-val statsValues = StatsValues()
-//private lateinit var statsViewModel : StatsViewModel
+private lateinit var statsViewModel : StatsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val statsViewModelInit : StatsViewModel by viewModels()
+        statsViewModel = statsViewModelInit
+
+        statsViewModel.mutableMoodValue.observe(this) {
+            Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
+        }
+
+        setStatsValuesInViewModel()
+
         setContent {
-            val statsViewModel : StatsViewModel by viewModels()
-//            statsViewModel = statsViewModelInit
-
-            statsViewModel.mutableMoodValue.observe(this) {
-                Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
-            }
-
-            statsViewModel.setEnergyValue(100)
-            statsViewModel.setMoodValue(100)
-            statsViewModel.setPhysicalValue(100)
-            statsViewModel.setMentalValue(100)
-            setStatsViewModelObservers()
-
-            setStatsValues()
-
             AThirdJetpackComposeStoryTheme {
-                FullView(statsViewModel)
+                FullView()
             }
 
         }
     }
 
-    private fun setStatsViewModelObservers() {
 
-    }
 }
 
-private fun setStatsValues() {
-
+private fun setStatsValuesInViewModel() {
+    statsViewModel.setEnergyValue(100)
+    statsViewModel.setMoodValue(100)
+    statsViewModel.setPhysicalValue(100)
+    statsViewModel.setMentalValue(100)
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
 //*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
 @Composable
-fun FullView(statsViewModel : StatsViewModel) {
+fun FullView() {
     ConstraintLayout (modifier = Modifier
         .fillMaxSize()
         .background(color = colorResource(id = R.color.white))
