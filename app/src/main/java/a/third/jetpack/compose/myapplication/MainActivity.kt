@@ -45,41 +45,47 @@ import androidx.lifecycle.Observer
 //Todo: Use MVVM
 
 val statsValues = StatsValues()
-private lateinit var statsViewModel : StatsViewModel
+//private lateinit var statsViewModel : StatsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val statsViewModelInit : StatsViewModel by viewModels()
-            statsViewModel = statsViewModelInit
+            val statsViewModel : StatsViewModel by viewModels()
+//            statsViewModel = statsViewModelInit
+
+            statsViewModel.mutableMoodValue.observe(this) {
+                Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
+            }
+
+            statsViewModel.setEnergyValue(100)
+            statsViewModel.setMoodValue(100)
+            statsViewModel.setPhysicalValue(100)
+            statsViewModel.setMentalValue(100)
+            setStatsViewModelObservers()
 
             setStatsValues()
 
             AThirdJetpackComposeStoryTheme {
-                FullView()
+                FullView(statsViewModel)
             }
+
         }
     }
 
     private fun setStatsViewModelObservers() {
-        statsViewModel.mutableMoodValue.observe(this) {
-            Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
-        }
+
     }
 }
 
 private fun setStatsValues() {
-    statsViewModel.setEnergyValue(100)
-    statsViewModel.setMoodValue(100)
-    statsViewModel.setPhysicalValue(100)
-    statsViewModel.setMentalValue(100)
+
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
 //*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
 @Composable
-fun FullView() {
+fun FullView(statsViewModel : StatsViewModel) {
     ConstraintLayout (modifier = Modifier
         .fillMaxSize()
         .background(color = colorResource(id = R.color.white))
@@ -168,7 +174,7 @@ fun FullView() {
                 verticalAlignment = Alignment.CenterVertically
                 )
             {
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
                         .size(100.dp, 40.dp),
                     onClick = {
@@ -183,7 +189,7 @@ fun FullView() {
 
                 Spacer(modifier = Modifier.width(40.dp))
 
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     //requiredSize works where size does not.
                     modifier = Modifier
                         .size(100.dp, 40.dp),
@@ -243,13 +249,13 @@ private fun randomFloat(min: Float, max: Float) : Float {
     return min + Random.nextFloat() * (max - min)
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun DefaultPreview() {
     AThirdJetpackComposeStoryTheme {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background) {
-            FullView()
+            Text(text = "Preview")
         }
     }
 }
