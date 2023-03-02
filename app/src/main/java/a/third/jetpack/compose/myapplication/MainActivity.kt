@@ -7,30 +7,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import a.third.jetpack.compose.myapplication.ui.theme.AThirdJetpackComposeStoryTheme
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import kotlin.random.Random
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import kotlin.random.Random.Default.nextInt
 
 //Todo: Card based? Follow story w/ different rounds. "Who are you" theme (Planescape: Torment)ish? With characters + helpers.
@@ -40,7 +34,7 @@ import kotlin.random.Random.Default.nextInt
 
 //Todo: Use MVVM
 
-private lateinit var StatValuesClass: StatsValues
+private lateinit var statsDataClass: StatsDataClass
 private lateinit var statsViewModel : StatsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -53,17 +47,17 @@ class MainActivity : ComponentActivity() {
         //When our moodValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
         statsViewModel.moodValue.observe(this) {
-            updateStatValuesClassFromViewModel("Mood")
+            updatestatsDataClassFromViewModel("Mood")
             Log.i("testView", "mood observer called")
         }
         statsViewModel.energyValue.observe(this) {
-            updateStatValuesClassFromViewModel("Energy")
+            updatestatsDataClassFromViewModel("Energy")
         }
         statsViewModel.physicalValue.observe(this) {
-            updateStatValuesClassFromViewModel("Physical")
+            updatestatsDataClassFromViewModel("Physical")
         }
         statsViewModel.mentalValue.observe(this) {
-            updateStatValuesClassFromViewModel("Mental")
+            updatestatsDataClassFromViewModel("Mental")
         }
 
         setInitialStatsValuesInClass()
@@ -76,23 +70,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-private fun updateStatValuesClassFromViewModel(stat: String) {
-    if (stat == "Energy") StatValuesClass.energy = statsViewModel.getEnergyValue()
-    if (stat == "Mood") StatValuesClass.mood = statsViewModel.getMoodValue()
-    if (stat == "Physical") StatValuesClass.physical = statsViewModel.getPhysicalValue()
-    if (stat == "Mental") StatValuesClass.mental = statsViewModel.getMentalValue()
+private fun updatestatsDataClassFromViewModel(stat: String) {
+    if (stat == "Energy") statsDataClass.energy = statsViewModel.getEnergyValue()
+    if (stat == "Mood") statsDataClass.mood = statsViewModel.getMoodValue()
+    if (stat == "Physical") statsDataClass.physical = statsViewModel.getPhysicalValue()
+    if (stat == "Mental") statsDataClass.mental = statsViewModel.getMentalValue()
 
-    Log.i("testView", "mood value set in data class is ${StatValuesClass.mood}")
+    Log.i("testView", "mood value set in data class is ${statsDataClass.mood}")
 
 }
 
-private fun setInitialStatsValuesInClass() { StatValuesClass = StatsValues(100, 100, 100, 100) }
+private fun setInitialStatsValuesInClass() { statsDataClass = StatsDataClass(100, 100, 100, 100) }
 
 private fun assignStatsValuesToViewModel() {
-    statsViewModel.setEnergyValue(StatValuesClass.energy)
-    statsViewModel.setMoodValue(StatValuesClass.mood)
-    statsViewModel.setPhysicalValue(StatValuesClass.physical)
-    statsViewModel.setMentalValue(StatValuesClass.mental)
+    statsViewModel.setEnergyValue(statsDataClass.energy)
+    statsViewModel.setMoodValue(statsDataClass.mood)
+    statsViewModel.setPhysicalValue(statsDataClass.physical)
+    statsViewModel.setMentalValue(statsDataClass.mental)
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
