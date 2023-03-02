@@ -94,6 +94,16 @@ private fun assignStatsValuesToViewModel() {
     statsViewModel.setMentalValue(statsDataClass.mental)
 }
 
+private fun addOrSubtractStatValueInViewModel(adding: Boolean) {
+    val statStringRolled = getRandomStatString()
+    val currentStatValue = statsViewModel.getStatValue(statStringRolled)
+
+    val newStatValue : Int
+    if (adding) newStatValue = currentStatValue + randomValueForStatChange() else newStatValue = currentStatValue - randomValueForStatChange()
+
+    statsViewModel.setStatValue(statStringRolled, newStatValue)
+}
+
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
 //*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
 @Composable
@@ -192,11 +202,7 @@ fun FullView() {
                     onClick = {
                         lifeLeft += addLifeFloat()
 
-                        val statStringRolled = getRandomStatString()
-                        val currentStatValue = statsViewModel.getStatValue(statStringRolled)
-                        val newStatValue = currentStatValue + randomValueForStatChange()
-
-                        statsViewModel.setStatValue(statStringRolled, newStatValue)
+                        addOrSubtractStatValueInViewModel(true)
                     }) {
                     Text(text = "Live!")
                 }
@@ -209,6 +215,8 @@ fun FullView() {
                         .size(100.dp, 40.dp),
                     onClick = {
                         lifeLeft += subtractLifeFloat()
+
+                        addOrSubtractStatValueInViewModel(false)
                     }) {
                     Text(text = "Kill!")
                 }
@@ -263,10 +271,13 @@ private fun randomFloat(min: Float, max: Float) : Float {
     return min + Random.nextFloat() * (max - min)
 }
 
-private fun randomValueForStatChange() : Int { return nextInt(5, 10) }
+private fun randomValueForStatChange() : Int { return (5..10).random() }
 
 private fun getRandomStatString() : String{
-    val roll = nextInt(1, 4)
+    val roll = (1..4).random()
+
+    Log.i("testRoll", "roll is $roll")
+
 
     if (roll == 1) return "mood"
     if (roll == 2) return "energy"
