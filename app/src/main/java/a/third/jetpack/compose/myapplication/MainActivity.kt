@@ -47,17 +47,20 @@ class MainActivity : ComponentActivity() {
         //When our moodValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
         statsViewModel.moodValue.observe(this) {
-            updatestatsDataClassFromViewModel("Mood")
+            updateStatsDataClassFromViewModel("Mood")
             Log.i("testView", "mood observer called")
         }
         statsViewModel.energyValue.observe(this) {
-            updatestatsDataClassFromViewModel("Energy")
+            updateStatsDataClassFromViewModel("Energy")
+            Log.i("testView", "energy observer called")
         }
         statsViewModel.physicalValue.observe(this) {
-            updatestatsDataClassFromViewModel("Physical")
+            updateStatsDataClassFromViewModel("Physical")
+            Log.i("testView", "physical observer called")
         }
         statsViewModel.mentalValue.observe(this) {
-            updatestatsDataClassFromViewModel("Mental")
+            updateStatsDataClassFromViewModel("Mental")
+            Log.i("testView", "mental observer called")
         }
 
         setInitialStatsValuesInClass()
@@ -70,14 +73,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-private fun updatestatsDataClassFromViewModel(stat: String) {
+private fun updateStatsDataClassFromViewModel(stat: String) {
     if (stat == "Energy") statsDataClass.energy = statsViewModel.getEnergyValue()
     if (stat == "Mood") statsDataClass.mood = statsViewModel.getMoodValue()
     if (stat == "Physical") statsDataClass.physical = statsViewModel.getPhysicalValue()
     if (stat == "Mental") statsDataClass.mental = statsViewModel.getMentalValue()
 
-    Log.i("testView", "mood value set in data class is ${statsDataClass.mood}")
-
+    Log.i("testView", "energy value in data class is ${statsDataClass.energy}")
+    Log.i("testView", "mood value in data class is ${statsDataClass.mood}")
+    Log.i("testView", "physical value in data class is ${statsDataClass.physical}")
+    Log.i("testView", "mental value in data class is ${statsDataClass.mental}")
 }
 
 private fun setInitialStatsValuesInClass() { statsDataClass = StatsDataClass(100, 100, 100, 100) }
@@ -101,12 +106,6 @@ fun FullView() {
         val (statsLayout, boardLayout) = createRefs()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
-
-        var moodValue by remember { mutableStateOf(statsViewModel.moodValue) }
-        var energyValue by remember { mutableStateOf(statsViewModel.energyValue) }
-        var physicalValue by remember { mutableStateOf(statsViewModel.physicalValue) }
-        var mentalValue by remember { mutableStateOf(statsViewModel.mentalValue) }
-
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -192,8 +191,12 @@ fun FullView() {
                         .size(100.dp, 40.dp),
                     onClick = {
                         lifeLeft += addLifeFloat()
-                        val valueRetrieved = statsViewModel.getMoodValue()
-                        statsViewModel.setMoodValue(valueRetrieved + randomValueForStatChange())
+
+                        val statStringRolled = getRandomStatString()
+                        val currentStatValue = statsViewModel.getStatValue(statStringRolled)
+                        val newStatValue = currentStatValue + randomValueForStatChange()
+
+                        statsViewModel.setStatValue(statStringRolled, newStatValue)
                     }) {
                     Text(text = "Live!")
                 }
@@ -261,6 +264,17 @@ private fun randomFloat(min: Float, max: Float) : Float {
 }
 
 private fun randomValueForStatChange() : Int { return nextInt(5, 10) }
+
+private fun getRandomStatString() : String{
+    val roll = nextInt(1, 4)
+
+    if (roll == 1) return "mood"
+    if (roll == 2) return "energy"
+    if (roll == 3) return "physical"
+    if (roll == 4) return "mental"
+
+    return ""
+}
 
 @Preview
 @Composable
