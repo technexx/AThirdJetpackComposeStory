@@ -44,7 +44,7 @@ import androidx.lifecycle.Observer
 
 //Todo: Use MVVM
 
-private lateinit var statsValues: StatsValues
+private lateinit var StatValuesClass: StatsValues
 private lateinit var statsViewModel : StatsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -54,51 +54,46 @@ class MainActivity : ComponentActivity() {
         val statsViewModelInit : StatsViewModel by viewModels()
         statsViewModel = statsViewModelInit
 
-        statsViewModel.mutableMoodValue.observe(this) {
-            Toast.makeText(this, "mood changed!", Toast.LENGTH_SHORT).show()
+        //When our moodValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
+        //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
+        statsViewModel.moodValue.observe(this) {
+            updateStatValuesFromViewModel("Mood")
+        }
+        statsViewModel.energyValue.observe(this) {
+            updateStatValuesFromViewModel("Energy")
+        }
+        statsViewModel.physicalValue.observe(this) {
+            updateStatValuesFromViewModel("Physical")
+        }
+        statsViewModel.mentalValue.observe(this) {
+            updateStatValuesFromViewModel("Mental")
         }
 
-        setInitialStatsValues()
+        setInitialStatsValuesInClass()
         assignStatsValuesToViewModel()
 
         setContent {
             AThirdJetpackComposeStoryTheme {
                 FullView()
             }
-
         }
     }
 }
 
-private fun setInitialStatsValues() { statsValues = StatsValues(100, 100, 100, 100) }
+private fun setInitialStatsValuesInClass() { StatValuesClass = StatsValues(100, 100, 100, 100) }
 
 private fun assignStatsValuesToViewModel() {
-    statsViewModel.setEnergyValue(statsValues.energy)
-    statsViewModel.setMoodValue(statsValues.mood)
-    statsViewModel.setPhysicalValue(statsValues.physical)
-    statsViewModel.setMentalValue(statsValues.mental)
+    statsViewModel.setEnergyValue(StatValuesClass.energy)
+    statsViewModel.setMoodValue(StatValuesClass.mood)
+    statsViewModel.setPhysicalValue(StatValuesClass.physical)
+    statsViewModel.setMentalValue(StatValuesClass.mental)
 }
 
-private fun updateStatsValuesFromViewModel() {
-    statsValues.energy = statsViewModel.getEnergyValue()
-    statsValues.mood = statsViewModel.getMoodValue()
-    statsValues.physical = statsViewModel.getPhysicalValue()
-    statsValues.mental = statsViewModel.getMentalValue()
-}
-
-//Todo: These should trigger when our ViewModel observer(s) respond to a user action
-private fun increaseStatValue(stat: String, value: Int) {
-    if (stat == "Energy") statsValues.energy += value
-    if (stat == "Mood") statsValues.mood += value
-    if (stat == "Physical") statsValues.physical += value
-    if (stat == "Mental") statsValues.mental += value
-}
-
-private fun decreaseStatValue(stat: String, value: Int) {
-    if (stat == "Energy") statsValues.energy -= value
-    if (stat == "Mood") statsValues.mood -= value
-    if (stat == "Physical") statsValues.physical -= value
-    if (stat == "Mental") statsValues.mental -= value
+private fun updateStatValuesFromViewModel(stat: String) {
+    if (stat == "Energy") StatValuesClass.energy = statsViewModel.getEnergyValue()
+    if (stat == "Mood") StatValuesClass.mood = statsViewModel.getMoodValue()
+    if (stat == "Physical") StatValuesClass.physical = statsViewModel.getPhysicalValue()
+    if (stat == "Mental") StatValuesClass.mental = statsViewModel.getMentalValue()
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -112,13 +107,9 @@ fun FullView() {
         val startGuideline = createGuidelineFromTop(0.25f)
         val (statsLayout, boardLayout) = createRefs()
 
-        //Todo: Set "remember" on each value.
-        var energyValue = statsViewModel.getEnergyValue()
-        var moodValue = statsViewModel.getMoodValue()
-        var physicalValue = statsViewModel.getPhysicalValue()
-        var mentalValue = statsViewModel.getMentalValue()
-
         var lifeLeft by remember { mutableStateOf(1.0f) }
+
+        var moodValue by remember
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -143,7 +134,7 @@ fun FullView() {
                 )
                 {
                     StatTextHeader(textString = "Energy", 0, 0, 0, 0)
-                    StatTextBody(100, topPadding = 0)
+                    StatTextBody(statsViewModel.getEnergyValue(), topPadding = 0)
 
                     StatTextHeader(textString = "Mood", 20, 0, 0, 0)
                     StatTextBody(statsViewModel.getMoodValue(), topPadding = 0)
@@ -173,10 +164,10 @@ fun FullView() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     StatTextHeader("Physical",0, 0, 0, 0)
-                    StatTextBody(100, topPadding = 0)
+                    StatTextBody(statsViewModel.getPhysicalValue(), topPadding = 0)
 
                     StatTextHeader("Mental", 20, 0, 0, 0)
-                    StatTextBody(100, topPadding = 0)
+                    StatTextBody(statsViewModel.getMentalValue(), topPadding = 0)
                 }
             }
         }
@@ -204,6 +195,8 @@ fun FullView() {
                         .size(100.dp, 40.dp),
                     onClick = {
                         lifeLeft += addLifeFloat()
+
+
                     }) {
                     Text(text = "Live!")
                 }

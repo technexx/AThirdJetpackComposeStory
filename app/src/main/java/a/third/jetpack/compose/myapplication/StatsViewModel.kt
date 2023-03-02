@@ -25,4 +25,14 @@ class StatsViewModel : ViewModel() {
     fun getPhysicalValue() : Int { return physicalValue.value!!}
     fun getMentalValue() : Int { return mentalValue.value!!}
 
+
+
+    val mutableEnergyChanged = MutableLiveData<Boolean>()
+    val mutableMoodChanged = MutableLiveData<Boolean>()
+    val mutablePhysicalChanged = MutableLiveData<Boolean>()
+    val mutableMentalChanged = MutableLiveData<Boolean>()
+
+    var statChangedString = ""
+    var valueChanged = MutableLiveData<Boolean>()
+
 }
