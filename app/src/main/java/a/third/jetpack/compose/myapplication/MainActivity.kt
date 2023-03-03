@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import a.third.jetpack.compose.myapplication.ui.theme.AThirdJetpackComposeStoryTheme
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,12 +33,12 @@ import kotlin.random.Random.Default.nextInt
     //Todo: Ancestral traits/cards to start, since current slate is blank.
 //Todo: Dating profile generator
     //Todo: Input (selection) of traits/likes/dislikes/etc.
-
-//Todo: Use MVVM
+    //Todo: Use thesaurus for descriptions entered.
 
 private lateinit var statsDataClass: StatsDataClass
 private lateinit var statsViewModel : StatsViewModel
-
+private lateinit var handler : Handler
+private lateinit var statBleedRunnable : Runnable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class MainActivity : ComponentActivity() {
 
         val statsViewModelInit : StatsViewModel by viewModels()
         statsViewModel = statsViewModelInit
+        handler = Handler(Looper.getMainLooper())
 
         //When our moodValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
@@ -95,15 +98,39 @@ private fun assignStatsValuesToViewModel() {
     statsViewModel.setMentalValue(statsDataClass.mental)
 }
 
-private fun addOrSubtractStatValueInViewModel(adding: Boolean) {
+private fun addStatValueInViewModel(value: Int) {
     val statStringRolled = getRandomStatString()
     val currentStatValue = statsViewModel.getStatValue(statStringRolled)
-
-    val newStatValue : Int
-    if (adding) newStatValue = currentStatValue + randomValueForStatChange() else newStatValue = currentStatValue - randomValueForStatChange()
+    val newStatValue = currentStatValue + value
 
     statsViewModel.setStatValue(statStringRolled, newStatValue)
 }
+
+private fun getRandomStatString() : String{
+    val roll = (1..4).random()
+
+    if (roll == 1) return "mood"
+    if (roll == 2) return "energy"
+    if (roll == 3) return "physical"
+    if (roll == 4) return "mental"
+
+    return ""
+}
+
+private fun randomValueForManualStatChange() : Int { return (5..10).random() }
+
+private fun instantiateStatBleedRunnable(statToBleed: String) {
+    statBleedRunnable = Runnable {
+        if (statToBleed == "mood") statsViewModel.setMoodValue(statsViewModel.getMoodValue() -1)
+        if (statToBleed == "energy") statsViewModel.setEnergyValue(statsViewModel.getEnergyValue() -1)
+        if (statToBleed == "physical") statsViewModel.setPhysicalValue(statsViewModel.getPhysicalValue() -1)
+        if (statToBleed == "mental") statsViewModel.setMentalValue(statsViewModel.getMentalValue() -1)
+
+        handler.postDelayed(statBleedRunnable,100)
+    }
+}
+
+private fun postStatBleedRunnable() { handler.post(statBleedRunnable) }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
 //*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
@@ -114,7 +141,7 @@ fun FullView() {
         .background(color = colorResource(id = R.color.white))
     ) {
         val startGuideline = createGuidelineFromTop(0.25f)
-        val (statsLayout, boardLayout) = createRefs()
+        val (statsLayout, centerLayout, userButtonLayout) = createRefs()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
 
@@ -129,7 +156,6 @@ fun FullView() {
         ) {
             Row(modifier = Modifier
                 .fillMaxSize(),
-//                .background(colorResource(id = R.color.light_teal)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -180,7 +206,25 @@ fun FullView() {
         }
 
         Column(modifier = Modifier
-            .constrainAs(boardLayout) {
+            .constrainAs(centerLayout) {
+                bottom.linkTo(userButtonLayout.top)
+            }
+            .fillMaxWidth()
+            .height(120.dp)
+            .background(color = colorResource(id = R.color.fade_white_2)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+            ) {
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
+                onClick = {
+
+            }) {
+                Text(text = "Let's Go!", color = Color.White, fontSize = 20.sp)
+            }
+        }
+
+        Column(modifier = Modifier
+            .constrainAs(userButtonLayout) {
                 bottom.linkTo(parent.bottom)
             }
             .fillMaxWidth()
@@ -199,7 +243,7 @@ fun FullView() {
                     modifier = Modifier
                         .size(120.dp, 40.dp),
                     onClick = {
-                        addOrSubtractStatValueInViewModel(true)
+                        addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
                     Text(text = "Energize!!")
                 }
@@ -210,7 +254,7 @@ fun FullView() {
                     modifier = Modifier
                         .size(120.dp, 40.dp),
                     onClick = {
-                        addOrSubtractStatValueInViewModel(true)
+                        addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
                     Text(text = "Buffify!!")
 
@@ -227,7 +271,7 @@ fun FullView() {
                     modifier = Modifier
                         .size(120.dp, 40.dp),
                     onClick = {
-                        addOrSubtractStatValueInViewModel(true)
+                        addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
                     Text(text = "Moodify!!")
                 }
@@ -238,7 +282,7 @@ fun FullView() {
                     modifier = Modifier
                         .size(120.dp, 40.dp),
                     onClick = {
-                        addOrSubtractStatValueInViewModel(true)
+                        addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
                     Text(text = "Neurofy!!!")
                 }
@@ -281,29 +325,6 @@ fun StuffInCards(cardValues: CardValues) {
 }
 
 data class CardValues(val energyMod: Int, val moodMod: Int, val physicalMod: Int, val mentalMod: Int)
-
-////////////////////////////////////////////////////////////////////////////////////
-
-private fun addLifeFloat() : Float { return randomFloat(0.05f, 0.1f) }
-
-private fun subtractLifeFloat() : Float { return - (randomFloat(0.05f, 0.1f)) }
-
-private fun randomFloat(min: Float, max: Float) : Float {
-    return min + Random.nextFloat() * (max - min)
-}
-
-private fun randomValueForStatChange() : Int { return (5..10).random() }
-
-private fun getRandomStatString() : String{
-    val roll = (1..4).random()
-
-    if (roll == 1) return "mood"
-    if (roll == 2) return "energy"
-    if (roll == 3) return "physical"
-    if (roll == 4) return "mental"
-
-    return ""
-}
 
 @Preview
 @Composable
