@@ -37,6 +37,7 @@ import kotlin.random.Random.Default.nextInt
 private lateinit var statsDataClass: StatsDataClass
 private lateinit var statsViewModel : StatsViewModel
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,47 +181,67 @@ fun FullView() {
 
         Column(modifier = Modifier
             .constrainAs(boardLayout) {
-                top.linkTo(statsLayout.bottom)
                 bottom.linkTo(parent.bottom)
             }
             .fillMaxWidth()
-            .height(120.dp)
+            .height(150.dp)
             .background(color = colorResource(id = R.color.lighter_grey)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
 
-            Row (modifier = Modifier
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(modifier = Modifier
                 .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-                )
-            {
+                horizontalArrangement = Arrangement.Center
+
+            ) {
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
-                        .size(100.dp, 40.dp),
+                        .size(120.dp, 40.dp),
                     onClick = {
-                        lifeLeft += addLifeFloat()
-
                         addOrSubtractStatValueInViewModel(true)
                     }) {
-                    Text(text = "Live!")
+                    Text(text = "Energize!!")
                 }
 
-                Spacer(modifier = Modifier.width(40.dp))
+                Spacer(modifier = Modifier.width(100.dp))
 
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                    //requiredSize works where size does not.
                     modifier = Modifier
-                        .size(100.dp, 40.dp),
+                        .size(120.dp, 40.dp),
                     onClick = {
-                        lifeLeft += subtractLifeFloat()
-
-                        addOrSubtractStatValueInViewModel(false)
+                        addOrSubtractStatValueInViewModel(true)
                     }) {
-                    Text(text = "Kill!")
+                    Text(text = "Buffify!!")
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                    modifier = Modifier
+                        .size(120.dp, 40.dp),
+                    onClick = {
+                        addOrSubtractStatValueInViewModel(true)
+                    }) {
+                    Text(text = "Moodify!!")
                 }
 
+                Spacer(modifier = Modifier.width(100.dp))
+
+                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                    modifier = Modifier
+                        .size(120.dp, 40.dp),
+                    onClick = {
+                        addOrSubtractStatValueInViewModel(true)
+                    }) {
+                    Text(text = "Neurofy!!!")
+                }
             }
         }
     }
@@ -276,9 +297,6 @@ private fun randomValueForStatChange() : Int { return (5..10).random() }
 private fun getRandomStatString() : String{
     val roll = (1..4).random()
 
-    Log.i("testRoll", "roll is $roll")
-
-
     if (roll == 1) return "mood"
     if (roll == 2) return "energy"
     if (roll == 3) return "physical"
@@ -293,7 +311,7 @@ fun DefaultPreview() {
     AThirdJetpackComposeStoryTheme {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background) {
-            Text(text = "Preview")
+            FullView()
         }
     }
 }
