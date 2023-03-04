@@ -70,6 +70,8 @@ class MainActivity : ComponentActivity() {
         setInitialStatsValuesInClass()
         assignStatsValuesToViewModel()
 
+        instantiateStatBleedRunnable()
+
         setContent {
             AThirdJetpackComposeStoryTheme {
                 FullView()
@@ -119,18 +121,24 @@ private fun getRandomStatString() : String{
 
 private fun randomValueForManualStatChange() : Int { return (5..10).random() }
 
-private fun instantiateStatBleedRunnable(statToBleed: String) {
+private fun postStatBleedRunnable() { handler.post(statBleedRunnable) }
+
+//Todo: No remembrance set in composable? Likely not changing because we are not directly interacting w/ UI.
+private fun instantiateStatBleedRunnable() {
     statBleedRunnable = Runnable {
+        val statToBleed = getRandomStatString()
+
         if (statToBleed == "mood") statsViewModel.setMoodValue(statsViewModel.getMoodValue() -1)
         if (statToBleed == "energy") statsViewModel.setEnergyValue(statsViewModel.getEnergyValue() -1)
         if (statToBleed == "physical") statsViewModel.setPhysicalValue(statsViewModel.getPhysicalValue() -1)
         if (statToBleed == "mental") statsViewModel.setMentalValue(statsViewModel.getMentalValue() -1)
 
+//        Log.i("testRunnable", "running with $statToBleed")
+        Log.i("testRunnable", "mood is ${statsViewModel.getMoodValue()}")
+
         handler.postDelayed(statBleedRunnable,100)
     }
 }
-
-private fun postStatBleedRunnable() { handler.post(statBleedRunnable) }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
 //*** You can use a float fraction inside maxWidth/maxHeight to lessen size.
@@ -217,7 +225,7 @@ fun FullView() {
             ) {
             Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
                 onClick = {
-
+                    postStatBleedRunnable()
             }) {
                 Text(text = "Let's Go!", color = Color.White, fontSize = 20.sp)
             }
