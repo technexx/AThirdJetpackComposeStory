@@ -29,11 +29,11 @@ import kotlin.random.Random
 import androidx.activity.viewModels
 import kotlin.random.Random.Default.nextInt
 
-//Todo: Card based? Follow story w/ different rounds. "Who are you" theme (Planescape: Torment)ish? With characters + helpers.
-    //Todo: Ancestral traits/cards to start, since current slate is blank.
-//Todo: Dating profile generator
-    //Todo: Input (selection) of traits/likes/dislikes/etc.
-    //Todo: Use thesaurus for descriptions entered.
+//Todo: No weapons to start (normal person). Every day objects can be acquired. Traits like Screaming, Shaming, Threatening, etc. can all be learned.
+//Todo: Start "low" on the streets/in a van.
+//Todo: Money as an issue. Everything costs including food, health, morale, etc.
+//Todo: Scrounge for food w/ risks, or buy w/ money.
+//Todo: Can be Truman Show-esque, progressing to intergalactic stuff.
 
 private lateinit var statsDataClass: StatsDataClass
 private lateinit var statsViewModel : StatsViewModel
@@ -48,23 +48,24 @@ class MainActivity : ComponentActivity() {
         statsViewModel = statsViewModelInit
         handler = Handler(Looper.getMainLooper())
 
-        //When our moodValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
+        //When our dexterityValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
-        statsViewModel.moodValue.observe(this) {
-            updateStatsDataClassFromViewModel("Mood")
-            Log.i("testView", "mood observer called")
+
+        statsViewModel.strengthValue.observe(this) {
+            updateStatsDataClassFromViewModel("Strength")
+            Log.i("testView", "strength observer called")
         }
-        statsViewModel.energyValue.observe(this) {
-            updateStatsDataClassFromViewModel("Energy")
-            Log.i("testView", "energy observer called")
+        statsViewModel.dexterityValue.observe(this) {
+            updateStatsDataClassFromViewModel("Dexterity")
+            Log.i("testView", "dexterity observer called")
         }
-        statsViewModel.physicalValue.observe(this) {
-            updateStatsDataClassFromViewModel("Physical")
-            Log.i("testView", "physical observer called")
+        statsViewModel.intellectValue.observe(this) {
+            updateStatsDataClassFromViewModel("Intellect")
+            Log.i("testView", "intellect observer called")
         }
-        statsViewModel.mentalValue.observe(this) {
-            updateStatsDataClassFromViewModel("Mental")
-            Log.i("testView", "mental observer called")
+        statsViewModel.willpowerValue.observe(this) {
+            updateStatsDataClassFromViewModel("Willpower")
+            Log.i("testView", "willpower observer called")
         }
 
         setInitialStatsValuesInClass()
@@ -80,24 +81,24 @@ class MainActivity : ComponentActivity() {
     }
 }
 private fun updateStatsDataClassFromViewModel(stat: String) {
-    if (stat == "Energy") statsDataClass.energy = statsViewModel.getEnergyValue()
-    if (stat == "Mood") statsDataClass.mood = statsViewModel.getMoodValue()
-    if (stat == "Physical") statsDataClass.physical = statsViewModel.getPhysicalValue()
-    if (stat == "Mental") statsDataClass.mental = statsViewModel.getMentalValue()
+    if (stat == "Strength") statsDataClass.strength = statsViewModel.getStrengthValue()
+    if (stat == "Dexterity") statsDataClass.dexterity = statsViewModel.getDexterityValue()
+    if (stat == "Intellect") statsDataClass.intellect = statsViewModel.getIntellectValue()
+    if (stat == "Willpower") statsDataClass.willpower = statsViewModel.getWillpowerValue()
 
-    Log.i("testView", "energy value in data class is ${statsDataClass.energy}")
-    Log.i("testView", "mood value in data class is ${statsDataClass.mood}")
-    Log.i("testView", "physical value in data class is ${statsDataClass.physical}")
-    Log.i("testView", "mental value in data class is ${statsDataClass.mental}")
+    Log.i("testView", "strength value in data class is ${statsDataClass.strength}")
+    Log.i("testView", "dexterity value in data class is ${statsDataClass.dexterity}")
+    Log.i("testView", "intellect value in data class is ${statsDataClass.intellect}")
+    Log.i("testView", "willpower value in data class is ${statsDataClass.willpower}")
 }
 
 private fun setInitialStatsValuesInClass() { statsDataClass = StatsDataClass(100, 100, 100, 100) }
 
 private fun assignStatsValuesToViewModel() {
-    statsViewModel.setEnergyValue(statsDataClass.energy)
-    statsViewModel.setMoodValue(statsDataClass.mood)
-    statsViewModel.setPhysicalValue(statsDataClass.physical)
-    statsViewModel.setMentalValue(statsDataClass.mental)
+    statsViewModel.setStrengthValue(statsDataClass.strength)
+    statsViewModel.setDexterityValue(statsDataClass.dexterity)
+    statsViewModel.setIntellectValue(statsDataClass.intellect)
+    statsViewModel.setWillpowerValue(statsDataClass.willpower)
 }
 
 private fun addStatValueInViewModel(value: Int) {
@@ -111,10 +112,10 @@ private fun addStatValueInViewModel(value: Int) {
 private fun getRandomStatString() : String{
     val roll = (1..4).random()
 
-    if (roll == 1) return "mood"
-    if (roll == 2) return "energy"
-    if (roll == 3) return "physical"
-    if (roll == 4) return "mental"
+    if (roll == 1) return "strength"
+    if (roll == 2) return "dexterity"
+    if (roll == 3) return "intellect"
+    if (roll == 4) return "willpower"
 
     return ""
 }
@@ -128,13 +129,13 @@ private fun instantiateStatBleedRunnable() {
     statBleedRunnable = Runnable {
         val statToBleed = getRandomStatString()
 
-        if (statToBleed == "mood") statsViewModel.setMoodValue(statsViewModel.getMoodValue() -1)
-        if (statToBleed == "energy") statsViewModel.setEnergyValue(statsViewModel.getEnergyValue() -1)
-        if (statToBleed == "physical") statsViewModel.setPhysicalValue(statsViewModel.getPhysicalValue() -1)
-        if (statToBleed == "mental") statsViewModel.setMentalValue(statsViewModel.getMentalValue() -1)
+        if (statToBleed == "strength") statsViewModel.setStrengthValue(statsViewModel.getStrengthValue() -1)
+        if (statToBleed == "dexterity") statsViewModel.setDexterityValue(statsViewModel.getDexterityValue() -1)
+        if (statToBleed == "intellect") statsViewModel.setIntellectValue(statsViewModel.getIntellectValue() -1)
+        if (statToBleed == "willpower") statsViewModel.setWillpowerValue(statsViewModel.getWillpowerValue() -1)
 
 //        Log.i("testRunnable", "running with $statToBleed")
-        Log.i("testRunnable", "mood is ${statsViewModel.getMoodValue()}")
+        Log.i("testRunnable", "dexterity is ${statsViewModel.getDexterityValue()}")
 
         handler.postDelayed(statBleedRunnable,100)
     }
@@ -174,11 +175,11 @@ fun FullView() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 )
                 {
-                    StatTextHeader(textString = "Energy", 0, 0, 0, 0)
-                    StatTextBody(statsViewModel.getEnergyValue(), topPadding = 0)
+                    StatTextHeader(textString = "Strength", 0, 0, 0, 0)
+                    StatTextBody(statsViewModel.getStrengthValue(), topPadding = 0)
 
-                    StatTextHeader(textString = "Mood", 20, 0, 0, 0)
-                    StatTextBody(statsViewModel.getMoodValue(), topPadding = 0)
+                    StatTextHeader(textString = "Dexterity", 20, 0, 0, 0)
+                    StatTextBody(statsViewModel.getDexterityValue(), topPadding = 0)
                 }
 
                 Column(modifier = Modifier
@@ -204,11 +205,11 @@ fun FullView() {
                     .background(colorResource(id = R.color.lighter_green)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    StatTextHeader("Physical",0, 0, 0, 0)
-                    StatTextBody(statsViewModel.getPhysicalValue(), topPadding = 0)
+                    StatTextHeader("Intellect",0, 0, 0, 0)
+                    StatTextBody(statsViewModel.getIntellectValue(), topPadding = 0)
 
-                    StatTextHeader("Mental", 20, 0, 0, 0)
-                    StatTextBody(statsViewModel.getMentalValue(), topPadding = 0)
+                    StatTextHeader("Willpower", 20, 0, 0, 0)
+                    StatTextBody(statsViewModel.getWillpowerValue(), topPadding = 0)
                 }
             }
         }
@@ -281,7 +282,7 @@ fun FullView() {
                     onClick = {
                         addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
-                    Text(text = "Moodify!!")
+                    Text(text = "Dexterityify!!")
                 }
 
                 Spacer(modifier = Modifier.width(100.dp))
@@ -332,7 +333,7 @@ fun StuffInCards(cardValues: CardValues) {
 
 }
 
-data class CardValues(val energyMod: Int, val moodMod: Int, val physicalMod: Int, val mentalMod: Int)
+data class CardValues(val strengthMod: Int, val dexterityMod: Int, val intellectMod: Int, val willpowerMod: Int)
 
 @Preview
 @Composable

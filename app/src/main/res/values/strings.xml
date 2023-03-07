@@ -1,72 +1,58 @@
 <resources>
     <string name="app_name">A Third Jetpack Compose Story</string>
-    <string name="intro_speech">
-        You\'re still here. I would have expected otherwise, given the rate of decay.\n\n
-        In another life, I would have liked to do more for you. I think we\'re near the end of things in earnest now, though.\n\n
-        Since I won\'t be seeing you again, I do hope that if there is a next life, it is kinder to you.
+
+    <string name="intro">
+
     </string>
 
     <string name="intro_cards">
         A mottle of defiance springs from some long-forgotten well.
     </string>
 
+    <!--Strength--> <string name="fight">Fight</string>
+    <!--Intellect--> <string name="gaslight">Gaslight</string>
+    <!--Dexterity--> <string name="run_away">Run away</string>
+    <!--Willpower--> <string name="sensual">Perform a sensual dance</string>
 
-    <string-array name="task_cards_array_light">
-        <item>Walk the Dog</item>
-        <item>Cook Breakfast</item>
-        <item>Cook Dinner</item>
-        <item>Get Dressed</item>
-        <item>Do Laundry</item>
+    <string-array name="enemies_easy">
+        <item>A small child of indeterminate sex</item>
+        <item>A teacup Chihuahua</item>
+        <item>A rolling bike wheel</item>
         <item></item>
     </string-array>
 
-    <string-array name="task_cards_array_moderate">
-        <item>Short Work Shift</item>
-        <item>Call Parent</item>
-
-    </string-array>
-
-    <string-array name="task_cards_array_severe">
-        <item>Long Work Shift</item>
-    </string-array>
-
-    <string-array name="tasks_cards_mixed">
-
+    <string-array name="enemies_easy_description">
+        <item>It looks harmless. It probably is harmless. There is something wrong with one of its eyes, but you cannot discern what. It is advancing.</item>
+        <item>Its slightly aft grin is K-9 reminiscent, except for a small pulsation on its neck that is too regular to be a twitch. It is trotting determinedly toward you.</item>
+        <item>Physics should not account for the methodical beeline the wheel is making for you.</item>
     </string-array>
 
 
-    <string-array name="consumable_cards_good">
-
-    </string-array>
-
-    <string-array name="consumable_cards_mixed">
-
-    </string-array>
 
     <string-array name="job_events_bad">
         <item>Your boss hates you and lets you know it. Loudly.</item>
         <item>Todd from Accounting pees in your coffee again.</item>
-        <item>The office receptionist forgets your name. You\'ve both been there for 32 years.</item>
+        <item>The office receptionist forgets your name. You\'ve both worked there for 32 years.</item>
         <item>One of your clients is unhappy. He\'s a wolf, and you\'re the fattest one there.</item>
         <item>Your paycheck is missing a few zeros, and it only had a few to begin with.</item>
-        <item>Your work socks have dissolved and you have to put on spares that aren\'t as comfortable.</item>
+        <item>Your work socks have dissolved.</item>
         <item>Today\'s lunch break has been replaced with nothing.</item>
-        <item>Your last cigarette tasted like a camel. The animal, not the brand,</item>
-        <item>The cute one in Accounts Billable wrote you another letter proclaiming their disdain</item>
+        <item>Your last cigarette tasted like a camel. The animal, not the brand.</item>
+        <item>The cute one in Accounts Billable wrote you another letter proclaiming their disdain.</item>
         <item>You slip on the floor and take a bite of the floor.</item>
         <item>One of your shoes leaves the office.</item>
-        <item>The ducks in your office building\'s courtyard reject your bread</item>
+        <item>The ducks in your office building\'s courtyard reject your bread.</item>
         <item>Your favorite song is on the radio and you don\'t have a radio.</item>
         <item>Your laptop is on fire.</item>
         <item>Your desk is on fire.</item>
         <item>Your hair is on fire.</item>
         <item>You\'ve been demoted. You find out from a Snapple bottle cap.</item>
-        <item>The whole office got together and build a life-sized effigy of you to laugh at when you\'re not around.</item>
+        <item>The whole office got together and built a life-sized effigy of you to throw things at.</item>
         <item>Your salary has been inversely tied to inflation.</item>
-        <item>You are assigned the role of foot-stool at the next office party.</item>
+        <item>You are assigned the role of foot stool at the next office party.</item>
         <item>Your last zoom meeting ended in vomiting.</item>
         <item>Your latest client has decided that they are not your client.</item>
-        <item>The water cooler refuses to dispense to you</item>
+        <item>The water cooler refuses to dispense to you.</item>
         <item>Lunch consisted of sadness with a side of nothing.</item>
         <item>Your boss needs to you stay after the office closes and catch ghouls.</item>
     </string-array>
@@ -79,7 +65,7 @@
         <item>You find an old shoe in the office bathroom. It kind of fits.</item>
         <item>Your office laptop has taken a break from flashing you with strobe lights.</item>
         <item>Friday\'s death match against Sven the Destroyer from IT has been cancelled.</item>
-        <item>This week\'s Casual Friday will not begin with a dressing down of you, per HR\'s latest memo.</item>
+        <item>This week\'s Casual Friday will not begin with a dressing down of you.</item>
         <item>Janice from Public Relations is out of town and will not be hunting you for sport this week.</item>
         <item>You caught two ghouls last night and your boss has rewarded you with a lettuce bounty.</item>
     </string-array>
@@ -101,7 +87,7 @@
         <item>The neighborhood cat is blackmailing you.</item>
         <item>You catch your neighbor cheating on his wife and he\'s somehow blackmailing you.</item>
         <item>The Hamburglar is upset at your lack of hams, and takes money instead.</item>
-        <item>Subway is no longer honoring free sandwich cards.</item>
+        <item>Subway is no longer honoring your free sandwich cards. Just yours.</item>
         <item>The local recycling center now requires items to be doofus-free.</item>
         <item>Your dollar-bill phobia is starting to catch up to you.</item>
         <item>Your custom medical-grade deodorant has doubled in price.</item>
@@ -119,7 +105,7 @@
         <item>You are mistaken by aid workers for a charity case.</item>
         <item>You find a quarter in your youngest child\'s ear. Are there more?</item>
         <item>Your Roth IRA has synergized the actuated backward overflow of depreciated commercial assets.</item>
-        <item>The bank teller is about to quit and commit Harikari, and decides to give you extra money.</item>
+        <item>The bank teller is about to quit and commit seppuku, and decides to give you extra money.</item>
         <item>Your significant other decides to put the whole family on an oxygen-only cleanse, which is pretty cheap.</item>
         <item>The ringing in your ears turns out to be just a bunch of silver dollars.</item>
         <item>Someone lands on Boardwalk and you don\'t have it mortgaged.</item>
