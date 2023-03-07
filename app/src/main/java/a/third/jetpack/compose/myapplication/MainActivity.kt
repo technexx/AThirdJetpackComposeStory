@@ -126,6 +126,7 @@ private fun randomValueForManualStatChange() : Int { return (5..10).random() }
 private fun postStatBleedRunnable() { handler.post(statBleedRunnable) }
 
 //Todo: No remembrance set in composable? Likely not changing because we are not directly interacting w/ UI.
+//Todo: Can use this as a random event that drains stat until action is taken.
 private fun instantiateStatBleedRunnable() {
     statBleedRunnable = Runnable {
         val statToBleed = getRandomStatString()
@@ -135,7 +136,6 @@ private fun instantiateStatBleedRunnable() {
         if (statToBleed == "intellect") statsViewModel.setIntellectValue(statsViewModel.getIntellectValue() -1)
         if (statToBleed == "willpower") statsViewModel.setWillpowerValue(statsViewModel.getWillpowerValue() -1)
 
-//        Log.i("testRunnable", "running with $statToBleed")
         Log.i("testRunnable", "dexterity is ${statsViewModel.getDexterityValue()}")
 
         handler.postDelayed(statBleedRunnable,100)
@@ -301,22 +301,6 @@ private fun StatTextBody(statValue: Int,  topPadding: Int) {
             .padding(top = topPadding.dp)
     )
 }
-
-@Composable
-fun VisibleGameCards(cards: List<CardValues>) {
-    LazyRow {
-        items(cards) { cardsShown ->
-            StuffInCards(cardsShown)
-        }
-    }
-}
-
-@Composable
-fun StuffInCards(cardValues: CardValues) {
-
-}
-
-data class CardValues(val strengthMod: Int, val dexterityMod: Int, val intellectMod: Int, val willpowerMod: Int)
 
 @Preview
 @Composable
