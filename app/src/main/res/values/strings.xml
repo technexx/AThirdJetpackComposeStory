@@ -12,7 +12,7 @@
     <!--Strength--> <string name="fight">Fight</string>
     <!--Intellect--> <string name="gaslight">Gaslight</string>
     <!--Dexterity--> <string name="run_away">Run away</string>
-    <!--Willpower--> <string name="sensual">Perform a sensual dance</string>
+    <!--Willpower--> <string name="sensual">Dance\nsensually</string>
 
     <string-array name="enemies_easy">
         <item>A small child of indeterminate sex</item>
@@ -26,7 +26,6 @@
         <item>Its slightly aft grin is K-9 reminiscent, except for a small pulsation on its neck that is too regular to be a twitch. It is trotting determinedly toward you.</item>
         <item>Physics should not account for the methodical beeline the wheel is making for you.</item>
     </string-array>
-
 
 
     <string-array name="job_events_bad">

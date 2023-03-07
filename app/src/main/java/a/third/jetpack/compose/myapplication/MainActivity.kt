@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import kotlin.random.Random
 import androidx.activity.viewModels
+import androidx.compose.ui.res.stringResource
 import kotlin.random.Random.Default.nextInt
 
 //Todo: No weapons to start (normal person). Every day objects can be acquired. Traits like Screaming, Shaming, Threatening, etc. can all be learned.
@@ -215,24 +216,6 @@ fun FullView() {
         }
 
         Column(modifier = Modifier
-            .constrainAs(centerLayout) {
-                bottom.linkTo(userButtonLayout.top)
-            }
-            .fillMaxWidth()
-            .height(120.dp)
-            .background(color = colorResource(id = R.color.fade_white_2)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-            ) {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.black)),
-                onClick = {
-                    postStatBleedRunnable()
-            }) {
-                Text(text = "Let's Go!", color = Color.White, fontSize = 20.sp)
-            }
-        }
-
-        Column(modifier = Modifier
             .constrainAs(userButtonLayout) {
                 bottom.linkTo(parent.bottom)
             }
@@ -250,22 +233,22 @@ fun FullView() {
             ) {
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
-                        .size(120.dp, 40.dp),
+                        .size(120.dp, 50.dp),
                     onClick = {
                         addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
-                    Text(text = "Energize!!")
+                    Text(text = stringResource(id = R.string.fight), fontSize = 16.sp)
                 }
 
                 Spacer(modifier = Modifier.width(100.dp))
 
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
-                        .size(120.dp, 40.dp),
+                        .size(120.dp, 50.dp),
                     onClick = {
                         addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
-                    Text(text = "Buffify!!")
+                    Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
 
                 }
             }
@@ -278,22 +261,22 @@ fun FullView() {
             ) {
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
-                        .size(120.dp, 40.dp),
+                        .size(120.dp, 50.dp),
                     onClick = {
                         addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
-                    Text(text = "Dexterityify!!")
+                    Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
                 }
 
                 Spacer(modifier = Modifier.width(100.dp))
 
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
-                        .size(120.dp, 40.dp),
+                        .size(120.dp, 50.dp),
                     onClick = {
                         addStatValueInViewModel(randomValueForManualStatChange())
                     }) {
-                    Text(text = "Neurofy!!!")
+                    Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
                 }
             }
         }
