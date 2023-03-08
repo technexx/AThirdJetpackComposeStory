@@ -41,6 +41,8 @@ private lateinit var statsViewModel : StatsViewModel
 private lateinit var handler : Handler
 private lateinit var statBleedRunnable : Runnable
 
+private lateinit var statRolls : StatRolls
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
         val statsViewModelInit : StatsViewModel by viewModels()
         statsViewModel = statsViewModelInit
         handler = Handler(Looper.getMainLooper())
+        statRolls = StatRolls()
 
         //When our dexterityValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
@@ -93,7 +96,10 @@ private fun updateStatsDataClassFromViewModel(stat: String) {
     Log.i("testView", "willpower value in data class is ${statsDataClass.willpower}")
 }
 
-private fun setInitialStatsValuesInClass() { statsDataClass = StatsDataClass(100, 100, 100, 100) }
+private fun setInitialStatsValuesInClass() {
+    statRolls.rollPlayerStats()
+    statsDataClass = StatsDataClass(statRolls.playerStrength, statRolls.playerDexterity, statRolls.playerIntellect, statRolls.playerWillpower)
+}
 
 private fun assignStatsValuesToViewModel() {
     statsViewModel.setStrengthValue(statsDataClass.strength)
