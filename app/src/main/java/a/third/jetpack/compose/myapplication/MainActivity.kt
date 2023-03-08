@@ -12,8 +12,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,10 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import kotlin.random.Random
 import androidx.activity.viewModels
 import androidx.compose.ui.res.stringResource
-import kotlin.random.Random.Default.nextInt
 
 //Todo: No weapons to start (normal person). Every day objects can be acquired. Traits like Screaming, Shaming, Threatening, etc. can all be learned.
 //Todo: Start "low" on the streets/in a van.
@@ -41,7 +37,7 @@ private lateinit var statsViewModel : StatsViewModel
 private lateinit var handler : Handler
 private lateinit var statBleedRunnable : Runnable
 
-private lateinit var statRolls : StatRolls
+private lateinit var statRolls : PlayerStatRolls
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +46,9 @@ class MainActivity : ComponentActivity() {
         val statsViewModelInit : StatsViewModel by viewModels()
         statsViewModel = statsViewModelInit
         handler = Handler(Looper.getMainLooper())
-        statRolls = StatRolls()
+        statRolls = PlayerStatRolls()
 
-        //When our dexterityValue is changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
+        //When our stat values are changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
 
         statsViewModel.strengthValue.observe(this) {
@@ -222,12 +218,24 @@ fun FullView() {
         }
 
         Column(modifier = Modifier
+            .constrainAs(centerLayout) {
+                top.linkTo(statsLayout.bottom)
+                bottom.linkTo(userButtonLayout.top)
+            }
+            .fillMaxWidth()
+            .height(400.dp)
+            .background(color = colorResource(id = R.color.very_light_grey)),
+        ) {
+            Text(text = stringResource(id = R.string.encounter_enemy, "noo"), fontSize = 16.sp)
+        }
+
+        Column(modifier = Modifier
             .constrainAs(userButtonLayout) {
                 bottom.linkTo(parent.bottom)
             }
             .fillMaxWidth()
             .height(150.dp)
-            .background(color = colorResource(id = R.color.lighter_grey)),
+            .background(color = colorResource(id = R.color.white)),
         ) {
 
             Spacer(modifier = Modifier.height(20.dp))
