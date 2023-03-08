@@ -9,6 +9,9 @@
         A mottle of defiance springs from some long-forgotten well.
     </string>
 
+    <string name="player_movement">Walk</string>
+
+    <string name="walking_without_enemy">You are just walking along.</string>
     <string name="encounter_enemy">You encounter a %1$s.</string>
 
     <!--Strength--> <string name="fight">Fight</string>

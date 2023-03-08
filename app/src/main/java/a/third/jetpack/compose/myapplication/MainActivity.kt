@@ -156,6 +156,7 @@ fun FullView() {
         val (statsLayout, centerLayout, userButtonLayout) = createRefs()
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
+        var onEncounter by remember { mutableStateOf(false) }
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -191,7 +192,7 @@ fun FullView() {
                     .background(colorResource(id = R.color.very_light_grey)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.boxman_2),
                         contentDescription = "Box Man",
@@ -226,7 +227,8 @@ fun FullView() {
             .height(400.dp)
             .background(color = colorResource(id = R.color.very_light_grey)),
         ) {
-            Text(text = stringResource(id = R.string.encounter_enemy, "noo"), fontSize = 16.sp)
+            if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else
+            Text(text = stringResource(id = R.string.encounter_enemy, "noo"), fontSize = 22.sp)
         }
 
         Column(modifier = Modifier
@@ -240,59 +242,74 @@ fun FullView() {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-
-            ) {
+            if (!onEncounter) {
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
                         .size(120.dp, 50.dp),
                     onClick = {
-                        addStatValueInViewModel(randomValueForManualStatChange())
+                        onEncounter = true
                     }) {
-                    Text(text = stringResource(id = R.string.fight), fontSize = 16.sp)
-                }
-
-                Spacer(modifier = Modifier.width(100.dp))
-
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                    modifier = Modifier
-                        .size(120.dp, 50.dp),
-                    onClick = {
-                        addStatValueInViewModel(randomValueForManualStatChange())
-                    }) {
-                    Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
-
+                    Text(text = stringResource(id = R.string.player_movement), fontSize = 20.sp)
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            if (onEncounter) {
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
 
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                    modifier = Modifier
-                        .size(120.dp, 50.dp),
-                    onClick = {
-                        addStatValueInViewModel(randomValueForManualStatChange())
-                    }) {
-                    Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
+                ) {
+                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                        modifier = Modifier
+                            .size(120.dp, 50.dp),
+                        onClick = {
+                            addStatValueInViewModel(randomValueForManualStatChange())
+                        }) {
+                        Text(text = stringResource(id = R.string.fight), fontSize = 16.sp)
+                    }
+
+                    Spacer(modifier = Modifier.width(100.dp))
+
+                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                        modifier = Modifier
+                            .size(120.dp, 50.dp),
+                        onClick = {
+                            addStatValueInViewModel(randomValueForManualStatChange())
+                        }) {
+                        Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
+
+                    }
                 }
 
-                Spacer(modifier = Modifier.width(100.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                    modifier = Modifier
-                        .size(120.dp, 50.dp),
-                    onClick = {
-                        addStatValueInViewModel(randomValueForManualStatChange())
-                    }) {
-                    Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                        modifier = Modifier
+                            .size(120.dp, 50.dp),
+                        onClick = {
+                            addStatValueInViewModel(randomValueForManualStatChange())
+                        }) {
+                        Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
+                    }
+
+                    Spacer(modifier = Modifier.width(100.dp))
+
+                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                        modifier = Modifier
+                            .size(120.dp, 50.dp),
+                        onClick = {
+                            addStatValueInViewModel(randomValueForManualStatChange())
+                        }) {
+                        Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
+                    }
                 }
             }
+
+
         }
     }
 }
