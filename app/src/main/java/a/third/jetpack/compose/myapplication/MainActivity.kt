@@ -37,7 +37,8 @@ private lateinit var statsViewModel : StatsViewModel
 private lateinit var handler : Handler
 private lateinit var statBleedRunnable : Runnable
 
-private lateinit var statRolls : PlayerStatRolls
+private lateinit var playerStatRolls : PlayerStatRolls
+private lateinit var enemyEncounters: EnemyEncounters
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +47,9 @@ class MainActivity : ComponentActivity() {
         val statsViewModelInit : StatsViewModel by viewModels()
         statsViewModel = statsViewModelInit
         handler = Handler(Looper.getMainLooper())
-        statRolls = PlayerStatRolls()
+
+        playerStatRolls = PlayerStatRolls()
+        enemyEncounters = EnemyEncounters(this)
 
         //When our stat values are changed via a UI action, that change is observed by our ViewModel, which then updates the value in our StatsValues class. Our FullView() Composable uses our ViewModel's stat values for its textViews.
         //This is a bit redundant at the moment, since our StatsValues class doesn't actually send anything back to ViewModel (the stat value is already changed), but it lays the groundwork for future changes.
@@ -93,8 +96,8 @@ private fun updateStatsDataClassFromViewModel(stat: String) {
 }
 
 private fun setInitialStatsValuesInClass() {
-    statRolls.rollPlayerStats()
-    statsDataClass = StatsDataClass(statRolls.playerStrength, statRolls.playerDexterity, statRolls.playerIntellect, statRolls.playerWillpower)
+    playerStatRolls.rollPlayerStats()
+    statsDataClass = StatsDataClass(playerStatRolls.playerStrength, playerStatRolls.playerDexterity, playerStatRolls.playerIntellect, playerStatRolls.playerWillpower)
 }
 
 private fun assignStatsValuesToViewModel() {
@@ -142,6 +145,10 @@ private fun instantiateStatBleedRunnable() {
 
         handler.postDelayed(statBleedRunnable,100)
     }
+}
+
+private fun getEnemyString() : String {
+    return enemyEncounters.getRandomEnemy().creatureString
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -228,7 +235,7 @@ fun FullView() {
             .background(color = colorResource(id = R.color.very_light_grey)),
         ) {
             if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else
-            Text(text = stringResource(id = R.string.encounter_enemy, "noo"), fontSize = 22.sp)
+            Text(text = stringResource(id = R.string.encounter_enemy, getEnemyString()), fontSize = 22.sp)
         }
 
         Column(modifier = Modifier

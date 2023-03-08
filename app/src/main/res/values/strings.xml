@@ -12,7 +12,7 @@
     <string name="player_movement">Walk</string>
 
     <string name="walking_without_enemy">You are just walking along.</string>
-    <string name="encounter_enemy">You encounter a %1$s.</string>
+    <string name="encounter_enemy">You encounter %1$s.</string>
 
     <!--Strength--> <string name="fight">Fight</string>
     <!--Intellect--> <string name="gaslight">Gaslight</string>
@@ -20,11 +20,11 @@
     <!--Willpower--> <string name="sensual">Dance\nsensually</string>
 
     <string-array name="enemies_easy">
-        <item>A small child of indeterminate sex</item>
-        <item>A teacup Chihuahua</item>
-        <item>A rolling bike wheel</item>
-        <item>An elderly woman using a walker</item>
-        <item>A baby with a full diaper</item>
+        <item>a small child of indeterminate sex</item>
+        <item>a teacup Chihuahua</item>
+        <item>a rolling bike wheel</item>
+        <item>an elderly woman using a walker</item>
+        <item>a baby with a full diaper</item>
     </string-array>
 
     <string-array name="enemies_easy_description">
