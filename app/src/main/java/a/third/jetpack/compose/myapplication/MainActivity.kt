@@ -40,6 +40,8 @@ private lateinit var statBleedRunnable : Runnable
 private lateinit var playerStatRolls : PlayerStatRolls
 private lateinit var enemyEncounters: EnemyEncounters
 
+private lateinit var currentEnemy : EnemyEncounters.EnemyStats
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,8 +149,10 @@ private fun instantiateStatBleedRunnable() {
     }
 }
 
-private fun getEnemyString() : String {
-    return enemyEncounters.getRandomEnemy().creatureString
+private fun rollPlayerAgainstEnemy(playerStat: Int, enemyStat: Int) : Boolean {
+    var playerRoll = (1..20).random() + playerStat
+    var enemyRoll = (1..20).random() + enemyStat
+    return playerStat > enemyStat
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -164,6 +168,7 @@ fun FullView() {
 
         var lifeLeft by remember { mutableStateOf(1.0f) }
         var onEncounter by remember { mutableStateOf(false) }
+        var actingAgainstEnemy by remember { mutableStateOf(false) }
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -234,8 +239,13 @@ fun FullView() {
             .height(400.dp)
             .background(color = colorResource(id = R.color.very_light_grey)),
         ) {
-            if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else
-            Text(text = stringResource(id = R.string.encounter_enemy, getEnemyString()), fontSize = 22.sp)
+            if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else {
+                enemyEncounters.assignRandomEnemy()
+                Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                if (actingAgainstEnemy) {
+
+                }
+            }
         }
 
         Column(modifier = Modifier
@@ -270,9 +280,10 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            addStatValueInViewModel(randomValueForManualStatChange())
+                            actingAgainstEnemy = true
+                            //Todo: Roll player str vs. enemy str
                         }) {
-                        Text(text = stringResource(id = R.string.fight), fontSize = 16.sp)
+                        Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
                     }
 
                     Spacer(modifier = Modifier.width(100.dp))
@@ -281,7 +292,7 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            addStatValueInViewModel(randomValueForManualStatChange())
+                            actingAgainstEnemy = true
                         }) {
                         Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
 
@@ -298,7 +309,7 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            addStatValueInViewModel(randomValueForManualStatChange())
+                            actingAgainstEnemy = true
                         }) {
                         Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
                     }
@@ -309,7 +320,7 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            addStatValueInViewModel(randomValueForManualStatChange())
+                            actingAgainstEnemy = true
                         }) {
                         Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
                     }
