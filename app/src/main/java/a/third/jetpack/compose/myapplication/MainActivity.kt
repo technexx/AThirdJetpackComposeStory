@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.activity.viewModels
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 
 //Todo: No weapons to start (normal person). Every day objects can be acquired. Traits like Screaming, Shaming, Threatening, etc. can all be learned.
 //Todo: Start "low" on the streets/in a van.
@@ -266,6 +267,15 @@ fun FullView() {
                 } else {
                     Text(text = stringResource(id = R.string.fight_enemy_lose, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
                 }
+            }
+
+            if (stateOfEngagement != 0) {
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(text = stringResource(id = R.string.enemy_health, enemyEncounters.currentEnemy.health, enemyEncounters.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                )
             }
         }
 

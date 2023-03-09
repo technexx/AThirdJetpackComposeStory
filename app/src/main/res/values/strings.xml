@@ -13,6 +13,7 @@
 
     <string name="walking_without_enemy">You are just walking along.</string>
     <string name="encounter_enemy">You encounter %1$s.</string>
+    <string name="enemy_health">Health:\n%1$s / %2$s</string>
 
     <string name="successful_attack">You successfully attack %1$s!</string>
     <string name="failed_attack">%1$s avoids your attack, and bonks you on the head!</string>
