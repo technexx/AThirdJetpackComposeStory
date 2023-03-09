@@ -250,34 +250,39 @@ fun FullView() {
 
             if (stateOfEngagement == MEETING_ENEMY) {
                 enemyEncounters.assignRandomEnemy()
+            }
+
+            if (stateOfEngagement != NO_ENEMY ) {
                 Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-            }
-
-            if (stateOfEngagement == ACTIVE_ENEMY) {
-                if (playerAttackIsSuccessful) {
-                    Text(text = stringResource(id = R.string.successful_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-                } else {
-                    Text(text = stringResource(id = R.string.failed_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-                }
-            }
-
-            if (stateOfEngagement == FINISHED_ENEMY) {
-                if (playerWinsBattle) {
-                    Text(text = stringResource(id = R.string.fight_enemy_win, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-                } else {
-                    Text(text = stringResource(id = R.string.fight_enemy_lose, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-                }
-            }
-
-            if (stateOfEngagement != 0) {
-                Spacer(modifier = Modifier.height(10.dp))
 
                 Text(text = stringResource(id = R.string.enemy_health, enemyEncounters.currentEnemy.health, enemyEncounters.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                if (stateOfEngagement == ACTIVE_ENEMY) {
+                    if (playerAttackIsSuccessful) {
+                        Text(text = stringResource(id = R.string.successful_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                    } else {
+                        Text(text = stringResource(id = R.string.failed_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                    }
+                }
+
+                if (stateOfEngagement == FINISHED_ENEMY) {
+                    if (playerWinsBattle) {
+                        Text(text = stringResource(id = R.string.fight_enemy_win, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                    } else {
+                        Text(text = stringResource(id = R.string.fight_enemy_lose, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                    }
+                }
             }
         }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
         Column(modifier = Modifier
             .constrainAs(userButtonLayout) {

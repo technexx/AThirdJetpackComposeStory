@@ -4,7 +4,7 @@ import android.content.Context
 
 class EnemyEncounters(context: Context) {
     private val creatureArrayEasy = context.resources.getStringArray(R.array.enemies_easy)
-    lateinit var currentEnemy : EnemyStats
+    var currentEnemy : EnemyStats = EnemyStats("0", "0", 0, 0, 0, 0, 0)
 
     var startingEnemyHealth = 0
 
