@@ -149,10 +149,11 @@ private fun instantiateStatBleedRunnable() {
     }
 }
 
-private fun rollPlayerAgainstEnemy(playerStat: Int, enemyStat: Int) : Boolean {
-    var playerRoll = (1..20).random() + playerStat
-    var enemyRoll = (1..20).random() + enemyStat
-    return playerStat > enemyStat
+private fun doesPlayerOutRollEnemy(playerStat: Int, enemyStat: Int) : Boolean {
+    val playerRoll = (1..20).random() + playerStat
+    val enemyRoll = (1..20).random() + enemyStat
+    Log.i("testRoll", "player roll is $playerRoll and enemy roll is $enemyRoll")
+    return playerRoll > enemyRoll
 }
 
 //*** Alignment modifiers affect the CHILDREN of rows/columns, not the rows/columns themselves.
@@ -169,6 +170,8 @@ fun FullView() {
         var lifeLeft by remember { mutableStateOf(1.0f) }
         var onEncounter by remember { mutableStateOf(false) }
         var actingAgainstEnemy by remember { mutableStateOf(false) }
+
+        var playerWinsBattle by remember { mutableStateOf(false) }
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -241,9 +244,14 @@ fun FullView() {
         ) {
             if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else {
                 enemyEncounters.assignRandomEnemy()
-                Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
-                if (actingAgainstEnemy) {
-
+                if (!actingAgainstEnemy) {
+                    Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                } else {
+                    if (playerWinsBattle) {
+                        Text(text = stringResource(id = R.string.fight_enemy_win), fontSize = 22.sp)
+                    } else {
+                        Text(text = stringResource(id = R.string.fight_enemy_lose), fontSize = 22.sp)
+                    }
                 }
             }
         }
@@ -281,7 +289,7 @@ fun FullView() {
                             .size(120.dp, 50.dp),
                         onClick = {
                             actingAgainstEnemy = true
-                            //Todo: Roll player str vs. enemy str
+                            playerWinsBattle = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemyEncounters.currentEnemy.strength))
                         }) {
                         Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
                     }
