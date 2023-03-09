@@ -13,8 +13,11 @@
 
     <string name="walking_without_enemy">You are just walking along.</string>
     <string name="encounter_enemy">You encounter %1$s.</string>
-    <string name="fight_enemy_win">"You win!"</string>
-    <string name="fight_enemy_lose">You lose!</string>
+
+    <string name="successful_attack">You successfully attack %1$s!</string>
+    <string name="failed_attack">%1$s avoids your attack, and bonks you on the head!</string>
+    <string name="fight_enemy_win">You defeat %1$s!</string>
+    <string name="fight_enemy_lose">You succumb to injuries from %1$s! Game over! </string>
 
     <!--Strength--> <string name="attack">Attack</string>
     <!--Intellect--> <string name="gaslight">Gaslight</string>

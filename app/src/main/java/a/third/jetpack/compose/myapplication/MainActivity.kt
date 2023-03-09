@@ -40,8 +40,6 @@ private lateinit var statBleedRunnable : Runnable
 private lateinit var playerStatRolls : PlayerStatRolls
 private lateinit var enemyEncounters: EnemyEncounters
 
-private lateinit var currentEnemy : EnemyEncounters.EnemyStats
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,11 +165,16 @@ fun FullView() {
         val startGuideline = createGuidelineFromTop(0.25f)
         val (statsLayout, centerLayout, userButtonLayout) = createRefs()
 
-        var lifeLeft by remember { mutableStateOf(1.0f) }
-        var onEncounter by remember { mutableStateOf(false) }
-        var actingAgainstEnemy by remember { mutableStateOf(false) }
+        var stateOfEngagement by remember { mutableStateOf(0) }
+        val NO_ENEMY = 0
+        val MEETING_ENEMY = 1
+        val ACTIVE_ENEMY = 2
+        val FINISHED_ENEMY = 3
 
-        var playerWinsBattle by remember { mutableStateOf(false) }
+        var playerAttackIsSuccessful by remember { mutableStateOf(true) }
+        var playerWinsBattle by remember { mutableStateOf(true) }
+
+        var lifeLeft by remember { mutableStateOf(1.0f) }
 
         Column (modifier = Modifier
             .constrainAs(statsLayout) {
@@ -242,16 +245,26 @@ fun FullView() {
             .height(400.dp)
             .background(color = colorResource(id = R.color.very_light_grey)),
         ) {
-            if (!onEncounter) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp) else {
+            if (stateOfEngagement == NO_ENEMY) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp)
+
+            if (stateOfEngagement == MEETING_ENEMY) {
                 enemyEncounters.assignRandomEnemy()
-                if (!actingAgainstEnemy) {
-                    Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                Text(text = stringResource(id = R.string.encounter_enemy, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+            }
+
+            if (stateOfEngagement == ACTIVE_ENEMY) {
+                if (playerAttackIsSuccessful) {
+                    Text(text = stringResource(id = R.string.successful_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
                 } else {
-                    if (playerWinsBattle) {
-                        Text(text = stringResource(id = R.string.fight_enemy_win), fontSize = 22.sp)
-                    } else {
-                        Text(text = stringResource(id = R.string.fight_enemy_lose), fontSize = 22.sp)
-                    }
+                    Text(text = stringResource(id = R.string.failed_attack, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                }
+            }
+
+            if (stateOfEngagement == FINISHED_ENEMY) {
+                if (playerWinsBattle) {
+                    Text(text = stringResource(id = R.string.fight_enemy_win, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
+                } else {
+                    Text(text = stringResource(id = R.string.fight_enemy_lose, enemyEncounters.currentEnemy.creatureString), fontSize = 22.sp)
                 }
             }
         }
@@ -267,29 +280,28 @@ fun FullView() {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (!onEncounter) {
+            if (stateOfEngagement == 0) {
                 Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                     modifier = Modifier
                         .size(120.dp, 50.dp),
                     onClick = {
-                        onEncounter = true
+                        stateOfEngagement = MEETING_ENEMY
                     }) {
                     Text(text = stringResource(id = R.string.player_movement), fontSize = 20.sp)
                 }
             }
 
-            if (onEncounter) {
+            if (stateOfEngagement != 0) {
                 Row(modifier = Modifier
                     .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-
                 ) {
                     Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            actingAgainstEnemy = true
-                            playerWinsBattle = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemyEncounters.currentEnemy.strength))
+                            stateOfEngagement = ACTIVE_ENEMY
+                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemyEncounters.currentEnemy.strength))
                         }) {
                         Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
                     }
@@ -300,7 +312,8 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            actingAgainstEnemy = true
+                            stateOfEngagement = ACTIVE_ENEMY
+                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getIntellectValue(), enemyEncounters.currentEnemy.intellect))
                         }) {
                         Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
 
@@ -317,7 +330,8 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            actingAgainstEnemy = true
+                            stateOfEngagement = ACTIVE_ENEMY
+                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getDexterityValue(), enemyEncounters.currentEnemy.dexterity))
                         }) {
                         Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
                     }
@@ -328,7 +342,8 @@ fun FullView() {
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            actingAgainstEnemy = true
+                            stateOfEngagement = ACTIVE_ENEMY
+                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getWillpowerValue(), enemyEncounters.currentEnemy.willpower))
                         }) {
                         Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
                     }
