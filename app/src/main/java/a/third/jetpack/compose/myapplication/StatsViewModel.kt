@@ -37,8 +37,8 @@ class StatsViewModel : ViewModel() {
     fun setIntellectValue(valueToAssign: Int) { mutableIntellectValue.value = valueToAssign }
     fun setWillpowerValue(valueToAssign: Int) { mutableWillpowerValue.value = valueToAssign }
 
-    fun getStrengthValue() : Int { return strengthValue.value!!}
+    fun getStrengthValue() : Int { return strengthValue.value!! }
     fun getDexterityValue() : Int { return dexterityValue.value!! }
-    fun getIntellectValue() : Int { return intellectValue.value!!}
-    fun getWillpowerValue() : Int { return willpowerValue.value!!}
+    fun getIntellectValue() : Int { return intellectValue.value!! }
+    fun getWillpowerValue() : Int { return willpowerValue.value!! }
 }
