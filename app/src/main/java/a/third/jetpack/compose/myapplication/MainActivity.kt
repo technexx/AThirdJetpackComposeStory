@@ -184,210 +184,219 @@ fun FullView() {
         var playerHealthAlphaValue = 1.0f
         var enemyHealthInteger = 0
 
-        Column (modifier = Modifier
-            .constrainAs(statsLayout) {
-                top.linkTo(parent.top)
-                bottom.linkTo(startGuideline)
-            }
-            .fillMaxWidth()
-            .height(150.dp)
-            .background(color = colorResource(id = R.color.lighter_grey)),
-        ) {
-            Row(modifier = Modifier
-                .fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        @Composable
+        fun StatsView() {
+            Column (modifier = Modifier
+                .constrainAs(statsLayout) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(startGuideline)
+                }
+                .fillMaxWidth()
+                .height(150.dp)
+                .background(color = colorResource(id = R.color.lighter_grey)),
             ) {
-                Column (modifier = Modifier
-                    .fillMaxHeight()
-                    .width(120.dp)
-                    .background(colorResource(id = R.color.android_magenta)),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                )
-                {
-                    StatTextHeader(textString = "Strength", 0, 0, 0, 0)
-                    StatTextBody(statsViewModel.getStrengthValue(), topPadding = 0)
-
-                    StatTextHeader(textString = "Dexterity", 20, 0, 0, 0)
-                    StatTextBody(statsViewModel.getDexterityValue(), topPadding = 0)
-                }
-
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(120.dp)
-                    .background(colorResource(id = R.color.very_light_grey)),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.boxman_2),
-                        contentDescription = "Box Man",
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(100.dp)
-                            .alpha(playerHealthAlphaValue)
-                    )
-                }
-
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(120.dp)
-                    .background(colorResource(id = R.color.lighter_green)),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    StatTextHeader("Intellect",0, 0, 0, 0)
-                    StatTextBody(statsViewModel.getIntellectValue(), topPadding = 0)
-
-                    StatTextHeader("Willpower", 20, 0, 0, 0)
-                    StatTextBody(statsViewModel.getWillpowerValue(), topPadding = 0)
-                }
-            }
-        }
-
-        Column(modifier = Modifier
-            .constrainAs(centerLayout) {
-                top.linkTo(statsLayout.bottom)
-                bottom.linkTo(userButtonLayout.top)
-            }
-            .fillMaxWidth()
-            .height(400.dp)
-            .background(color = colorResource(id = R.color.very_light_grey)),
-        ) {
-            if (stateOfEngagement == NO_ENEMY) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp)
-
-            if (playerEncountersEnemy) {
-                Log.i("testDraw", "mutable playerEncounter re-drawing with $stateOfEngagement")
-
-                if (stateOfEngagement == MEETING_ENEMY) {
-                    enemies.assignRandomEnemy()
-                    enemyHealthInteger = enemies.currentEnemy.health
-                }
-
-                if (stateOfEngagement != NO_ENEMY ) {
-                    Text(text = stringResource(id = R.string.encounter_enemy, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Text(text = stringResource(id = R.string.enemy_health, enemies.currentEnemy.health, enemies.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    if (stateOfEngagement == ACTIVE_ENEMY) {
-                        if (playerAttackIsSuccessful) {
-                            enemies.currentEnemy.health -= enemies.damageToEnemy()
-                            Text(text = stringResource(id = R.string.successful_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                        } else {
-                            playerHealthInteger -= enemies.damageFromEnemy()
-                            Text(text = stringResource(id = R.string.failed_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                        }
-                    }
-
-                    if (stateOfEngagement == FINISHED_ENEMY) {
-                        if (playerWinsBattle) {
-                            Text(text = stringResource(id = R.string.fight_enemy_win, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                        } else {
-                            Text(text = stringResource(id = R.string.fight_enemy_lose, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                        }
-                    }
-                }
-            }
-
-        }
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-        Column(modifier = Modifier
-            .constrainAs(userButtonLayout) {
-                bottom.linkTo(parent.bottom)
-            }
-            .fillMaxWidth()
-            .height(150.dp)
-            .background(color = colorResource(id = R.color.white)),
-        ) {
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            if (stateOfEngagement == NO_ENEMY) {
-                Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                    modifier = Modifier
-                        .size(120.dp, 50.dp),
-                    onClick = {
-                        stateOfEngagement = MEETING_ENEMY
-                        playerEncountersEnemy = true
-                        Log.i("testDraw", "walking onClick executed")
-                    }) {
-                    Text(text = stringResource(id = R.string.player_movement), fontSize = 20.sp)
-                }
-            }
-
-            if (stateOfEngagement != NO_ENEMY) {
                 Row(modifier = Modifier
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    .fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                        modifier = Modifier
-                            .size(120.dp, 50.dp),
-                        onClick = {
-                            stateOfEngagement = ACTIVE_ENEMY
-                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength))
-                        }) {
-                        Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
+                    Column (modifier = Modifier
+                        .fillMaxHeight()
+                        .width(120.dp)
+                        .background(colorResource(id = R.color.android_magenta)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    )
+                    {
+                        StatTextHeader(textString = "Strength", 0, 0, 0, 0)
+                        StatTextBody(statsViewModel.getStrengthValue(), topPadding = 0)
+
+                        StatTextHeader(textString = "Dexterity", 20, 0, 0, 0)
+                        StatTextBody(statsViewModel.getDexterityValue(), topPadding = 0)
                     }
 
-                    Log.i("test", "running")
+                    Column(modifier = Modifier
+                        .fillMaxHeight()
+                        .width(120.dp)
+                        .background(colorResource(id = R.color.very_light_grey)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.boxman_2),
+                            contentDescription = "Box Man",
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(100.dp)
+                                .alpha(playerHealthAlphaValue)
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.width(100.dp))
+                    Column(modifier = Modifier
+                        .fillMaxHeight()
+                        .width(120.dp)
+                        .background(colorResource(id = R.color.lighter_green)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        StatTextHeader("Intellect",0, 0, 0, 0)
+                        StatTextBody(statsViewModel.getIntellectValue(), topPadding = 0)
 
-                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                        modifier = Modifier
-                            .size(120.dp, 50.dp),
-                        onClick = {
-                            stateOfEngagement = ACTIVE_ENEMY
-                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getIntellectValue(), enemies.currentEnemy.intellect))
-                        }) {
-                        Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
-
+                        StatTextHeader("Willpower", 20, 0, 0, 0)
+                        StatTextBody(statsViewModel.getWillpowerValue(), topPadding = 0)
                     }
                 }
+            }
+        }
+
+        @Composable
+        fun BodyView() {
+            Column(modifier = Modifier
+                .constrainAs(centerLayout) {
+                    top.linkTo(statsLayout.bottom)
+                    bottom.linkTo(userButtonLayout.top)
+                }
+                .fillMaxWidth()
+                .height(400.dp)
+                .background(color = colorResource(id = R.color.very_light_grey)),
+            ) {
+                if (stateOfEngagement == NO_ENEMY) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp)
+
+                if (playerEncountersEnemy) {
+                    Log.i("testDraw", "mutable playerEncounter re-drawing with $stateOfEngagement")
+
+                    if (stateOfEngagement == MEETING_ENEMY) {
+                        enemies.assignRandomEnemy()
+                        enemyHealthInteger = enemies.currentEnemy.health
+                    }
+
+                    if (stateOfEngagement != NO_ENEMY ) {
+                        Text(text = stringResource(id = R.string.encounter_enemy, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(text = stringResource(id = R.string.enemy_health, enemies.currentEnemy.health, enemies.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        if (stateOfEngagement == ACTIVE_ENEMY) {
+                            if (playerAttackIsSuccessful) {
+                                enemies.currentEnemy.health -= enemies.damageToEnemy()
+                                Text(text = stringResource(id = R.string.successful_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                            } else {
+                                playerHealthInteger -= enemies.damageFromEnemy()
+                                Text(text = stringResource(id = R.string.failed_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                            }
+                        }
+
+                        if (stateOfEngagement == FINISHED_ENEMY) {
+                            if (playerWinsBattle) {
+                                Text(text = stringResource(id = R.string.fight_enemy_win, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                            } else {
+                                Text(text = stringResource(id = R.string.fight_enemy_lose, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        @Composable
+        fun ButtonView() {
+            Column(modifier = Modifier
+                .constrainAs(userButtonLayout) {
+                    bottom.linkTo(parent.bottom)
+                }
+                .fillMaxWidth()
+                .height(150.dp)
+                .background(color = colorResource(id = R.color.white)),
+            ) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row(modifier = Modifier
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                if (stateOfEngagement == NO_ENEMY) {
                     Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
                         modifier = Modifier
                             .size(120.dp, 50.dp),
                         onClick = {
-                            stateOfEngagement = ACTIVE_ENEMY
-                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getDexterityValue(), enemies.currentEnemy.dexterity))
+                            stateOfEngagement = MEETING_ENEMY
+                            playerEncountersEnemy = true
+                            Log.i("testDraw", "walking onClick executed")
                         }) {
-                        Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
-                    }
-
-                    Spacer(modifier = Modifier.width(100.dp))
-
-                    Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
-                        modifier = Modifier
-                            .size(120.dp, 50.dp),
-                        onClick = {
-                            stateOfEngagement = ACTIVE_ENEMY
-                            playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getWillpowerValue(), enemies.currentEnemy.willpower))
-                        }) {
-                        Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
+                        Text(text = stringResource(id = R.string.player_movement), fontSize = 20.sp)
                     }
                 }
+
+                if (stateOfEngagement != NO_ENEMY) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                            modifier = Modifier
+                                .size(120.dp, 50.dp),
+                            onClick = {
+                                stateOfEngagement = ACTIVE_ENEMY
+                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength))
+                            }) {
+                            Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
+                        }
+
+                        Log.i("test", "running")
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                            modifier = Modifier
+                                .size(120.dp, 50.dp),
+                            onClick = {
+                                stateOfEngagement = ACTIVE_ENEMY
+                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getIntellectValue(), enemies.currentEnemy.intellect))
+                            }) {
+                            Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
+
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(modifier = Modifier
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                            modifier = Modifier
+                                .size(120.dp, 50.dp),
+                            onClick = {
+                                stateOfEngagement = ACTIVE_ENEMY
+                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getDexterityValue(), enemies.currentEnemy.dexterity))
+                            }) {
+                            Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
+                        }
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Button(colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white)),
+                            modifier = Modifier
+                                .size(120.dp, 50.dp),
+                            onClick = {
+                                stateOfEngagement = ACTIVE_ENEMY
+                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getWillpowerValue(), enemies.currentEnemy.willpower))
+                            }) {
+                            Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
+                        }
+                    }
+                }
+
+
             }
-
-
         }
+
+        StatsView()
+        BodyView()
+        ButtonView()
     }
 }
 
