@@ -166,22 +166,21 @@ fun FullView() {
         val startGuideline = createGuidelineFromTop(0.25f)
         val (statsLayout, centerLayout, userButtonLayout) = createRefs()
 
+        //Todo: Any non-remembered variable WILL RESET as composable is re-drawn.
         var stateOfEngagement by remember { mutableStateOf(0) }
-
         val NO_ENEMY = 0
         val MEETING_ENEMY = 1
         val ACTIVE_ENEMY = 2
         val FINISHED_ENEMY = 3
 
-        var playerEncountersEnemy = false
+        var activeAttack by remember { mutableStateOf(false) }
         var playerAttackIsSuccessful = false
         var playerWinsBattle = false
 
         var playerHealthInteger = 0
         var playerHealthAlphaValue = 1.0f
-        var enemyHealthInteger = 0
+        var enemyHealthInteger by remember { mutableStateOf(0) }
 
-        //Todo: We should only need a redraw of stateOfEngagement, since any composable function it's in should re-draw completely.
         //Will only re-draw instances of this variable.
 //        var reDrawComposable by remember { mutableStateOf(false) }
 
@@ -263,42 +262,45 @@ fun FullView() {
             ) {
                 if (stateOfEngagement == NO_ENEMY) Text(text = stringResource(id = R.string.walking_without_enemy), fontSize = 22.sp)
 
-                if (playerEncountersEnemy) {
-                    Log.i("testDraw", "mutable playerEncounter re-drawing with $stateOfEngagement")
+                if (stateOfEngagement == MEETING_ENEMY) {
+                    enemies.assignRandomEnemy()
+                    enemyHealthInteger = enemies.currentEnemy.health
+                }
 
-                    if (stateOfEngagement == MEETING_ENEMY) {
-                        enemies.assignRandomEnemy()
-                        enemyHealthInteger = enemies.currentEnemy.health
-                    }
+                if (stateOfEngagement != NO_ENEMY ) {
+                    Text(text = stringResource(id = R.string.encounter_enemy, enemies.currentEnemy.creatureString), fontSize = 22.sp)
 
-                    if (stateOfEngagement != NO_ENEMY ) {
-                        Text(text = stringResource(id = R.string.encounter_enemy, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = stringResource(id = R.string.enemy_health, enemies.currentEnemy.health, enemies.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
 
-                        Text(text = stringResource(id = R.string.enemy_health, enemies.currentEnemy.health, enemies.startingEnemyHealth), fontSize = 22.sp, textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
+                    Spacer(modifier = Modifier.height(30.dp))
 
-                        Spacer(modifier = Modifier.height(30.dp))
-
-                        if (stateOfEngagement == ACTIVE_ENEMY) {
+                    //Todo: This will loop. enemyHealthInteger should change only once, perhaps w/ conditional attached.
+                    if (stateOfEngagement == ACTIVE_ENEMY) {
+                        Log.i("testDraw", "active attack is $activeAttack")
+                        if (activeAttack) {
                             if (playerAttackIsSuccessful) {
-                                enemies.currentEnemy.health -= enemies.damageToEnemy()
+                                enemyHealthInteger = (enemies.currentEnemy.health - enemies.damageToEnemy())
+                                enemies.currentEnemy.health = enemyHealthInteger
+                                Log.i("testDraw", "attack is successful and enemy health integer is $enemyHealthInteger")
                                 Text(text = stringResource(id = R.string.successful_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
                             } else {
                                 playerHealthInteger -= enemies.damageFromEnemy()
                                 Text(text = stringResource(id = R.string.failed_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
                             }
                         }
+//                        activeAttack = false
+                    }
 
-                        if (stateOfEngagement == FINISHED_ENEMY) {
-                            if (playerWinsBattle) {
-                                Text(text = stringResource(id = R.string.fight_enemy_win, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                            } else {
-                                Text(text = stringResource(id = R.string.fight_enemy_lose, enemies.currentEnemy.creatureString), fontSize = 22.sp)
-                            }
+                    if (stateOfEngagement == FINISHED_ENEMY) {
+                        if (playerWinsBattle) {
+                            Text(text = stringResource(id = R.string.fight_enemy_win, enemies.currentEnemy.creatureString), fontSize = 22.sp)
+                        } else {
+                            Text(text = stringResource(id = R.string.fight_enemy_lose, enemies.currentEnemy.creatureString), fontSize = 22.sp)
                         }
                     }
                 }
@@ -325,7 +327,6 @@ fun FullView() {
                             .size(120.dp, 50.dp),
                         onClick = {
                             stateOfEngagement = MEETING_ENEMY
-                            playerEncountersEnemy = true
                         }) {
                         Text(text = stringResource(id = R.string.player_movement), fontSize = 20.sp)
                     }
@@ -340,8 +341,11 @@ fun FullView() {
                             modifier = Modifier
                                 .size(120.dp, 50.dp),
                             onClick = {
+                                activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
-                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength))
+                                val success = doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength)
+                                playerAttackIsSuccessful = success
+
                             }) {
                             Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
                         }
@@ -352,6 +356,7 @@ fun FullView() {
                             modifier = Modifier
                                 .size(120.dp, 50.dp),
                             onClick = {
+                                activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
                                 playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getIntellectValue(), enemies.currentEnemy.intellect))
                             }) {
@@ -370,6 +375,7 @@ fun FullView() {
                             modifier = Modifier
                                 .size(120.dp, 50.dp),
                             onClick = {
+                                activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
                                 playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getDexterityValue(), enemies.currentEnemy.dexterity))
                             }) {
@@ -382,6 +388,7 @@ fun FullView() {
                             modifier = Modifier
                                 .size(120.dp, 50.dp),
                             onClick = {
+                                activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
                                 playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getWillpowerValue(), enemies.currentEnemy.willpower))
                             }) {
