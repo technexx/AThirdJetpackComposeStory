@@ -179,7 +179,7 @@ fun FullView() {
 
         var playerHealthInteger = 0
         var playerHealthAlphaValue = 1.0f
-        var enemyHealthInteger by remember { mutableStateOf(0) }
+        var enemyHealthInteger = 0
 
         //Will only re-draw instances of this variable.
 //        var reDrawComposable by remember { mutableStateOf(false) }
@@ -279,11 +279,11 @@ fun FullView() {
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    //Todo: This will loop. enemyHealthInteger should change only once, perhaps w/ conditional attached.
                     if (stateOfEngagement == ACTIVE_ENEMY) {
                         Log.i("testDraw", "active attack is $activeAttack")
                         if (activeAttack) {
-                            if (playerAttackIsSuccessful) {
+                            val success = doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength)
+                            if (success) {
                                 enemyHealthInteger = (enemies.currentEnemy.health - enemies.damageToEnemy())
                                 enemies.currentEnemy.health = enemyHealthInteger
                                 Log.i("testDraw", "attack is successful and enemy health integer is $enemyHealthInteger")
@@ -292,8 +292,8 @@ fun FullView() {
                                 playerHealthInteger -= enemies.damageFromEnemy()
                                 Text(text = stringResource(id = R.string.failed_attack, enemies.currentEnemy.creatureString), fontSize = 22.sp)
                             }
+                            activeAttack = false
                         }
-//                        activeAttack = false
                     }
 
                     if (stateOfEngagement == FINISHED_ENEMY) {
@@ -343,9 +343,6 @@ fun FullView() {
                             onClick = {
                                 activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
-                                val success = doesPlayerOutRollEnemy(statsViewModel.getStrengthValue(), enemies.currentEnemy.strength)
-                                playerAttackIsSuccessful = success
-
                             }) {
                             Text(text = stringResource(id = R.string.attack), fontSize = 16.sp)
                         }
@@ -358,7 +355,6 @@ fun FullView() {
                             onClick = {
                                 activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
-                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getIntellectValue(), enemies.currentEnemy.intellect))
                             }) {
                             Text(text = stringResource(id = R.string.gaslight), fontSize = 16.sp)
 
@@ -377,7 +373,6 @@ fun FullView() {
                             onClick = {
                                 activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
-                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getDexterityValue(), enemies.currentEnemy.dexterity))
                             }) {
                             Text(text = stringResource(id = R.string.run_away), fontSize = 16.sp)
                         }
@@ -390,7 +385,6 @@ fun FullView() {
                             onClick = {
                                 activeAttack = true
                                 stateOfEngagement = ACTIVE_ENEMY
-                                playerAttackIsSuccessful = (doesPlayerOutRollEnemy(statsViewModel.getWillpowerValue(), enemies.currentEnemy.willpower))
                             }) {
                             Text(text = stringResource(id = R.string.sensual), fontSize = 14.sp)
                         }
